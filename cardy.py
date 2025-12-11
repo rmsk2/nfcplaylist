@@ -1,7 +1,7 @@
 from smartcard.CardMonitoring import CardMonitor, CardObserver
 from smartcard.util import toHexString
 import pygame
-from soundyconsts import *
+from nfcplaylistconsts import *
 
 
 class RfidObserver(CardObserver):

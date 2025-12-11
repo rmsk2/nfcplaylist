@@ -5,7 +5,7 @@ from os.path import isfile, join
 from pathlib import Path
 import playlist
 import cardy
-from soundyconsts import *
+from nfcplaylistconsts import *
 import desfire
 import pygame
 

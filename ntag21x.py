@@ -1,6 +1,6 @@
 import hashlib
 from smartcard.util import toHexString
-from soundyconsts import *
+from nfcplaylistconsts import *
 
 class Ntag215UidReader(IUidReader):
     def __init__(self, watched_atr):

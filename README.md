@@ -75,7 +75,7 @@ totally overblown and you are right. But that is what seemed to work with my rea
 ## Using simpler NFC tags
 
 In a second step and after purchasing an additional reader (an ACS ACR122U) I also implemented reading serial numbers from ISO 14443 Type A
-NFC tags like for instance various types of Mifare cards. Take a look at `uidfactory.py`, `soundyconsts.IUidReader`, `DESFireUidReader`
+NFC tags like for instance various types of Mifare cards. Take a look at `uidfactory.py`, `nfcplaylistconsts.IUidReader`, `DESFireUidReader`
 and `Ntag215UidReader` in order to get an idea of how to add more card types. I then discovered that the DESFire cards can also be 
 treated as simple ISO 14443 Type A tags, but I left the DESFire specific code in place.
 
@@ -104,7 +104,7 @@ hash some additional data or use more hash bytes to make sure all of your cards 
 
 # Running the software and configuration
 
-You can run this software through the command `python3 soundy.py <config_dir>`. Maybe you have to replace `python3` by `python`
+You can run this software through the command `python3 nfcplaylist.py <config_dir>`. Maybe you have to replace `python3` by `python`
 depending on your system. The config dir is optional. If it is mssing the current directory is used. When started the program
 reads the file `ui_config` in the config dir and interprets any `.json` file in this directory as a playlist. When an error
 reading a card is encountered the background of the UI flashes red once. An error reading a file is signalled by a single flashing
@@ -112,7 +112,7 @@ of the background in blue.
 
 ## Config of program
 
-The overall config of this software is split between two files: `ui_config` and `soundyconsts.py`. In the JSON file `ui_config`
+The overall config of this software is split between two files: `ui_config` and `nfcplaylistconsts.py`. In the JSON file `ui_config`
 under `sounds` you can  configure the sounds which are played when for instance an error occurs or a card is successfully read
 by referencing a corresponding file. Any file format supported by [`pygame`](https://www.pygame.org/docs/ref/mixer.html#pygame.mixer.Sound) 
 can be used here. According to the documentation currently OGG and WAV are supported for this purpose. Please note that this limitation 
@@ -120,11 +120,11 @@ does not apply to the music files on the playlist. These can be [MP3 or OGG](htt
 
 In the `ids` "section" you can configure which cards are used as `function cards` as specified by their id. As written above the
 card ids of DESFire and other cards known to this software can de determined using `id_gen.py`. The ids of cards which are identified 
-by their ATR only is determined by their position in the list `ALL_ATRS` contained in the module `soundyconsts.py`.
+by their ATR only is determined by their position in the list `ALL_ATRS` contained in the module `nfcplaylistconsts.py`.
 
 The "section" `size` specifies the size of the UI in pixels as well as the font sizes used for displaying text. Finally the "key" 
 `wait_reader_sec` determines how long the software waits for the reader to become ready. The messages displayed on the UI can
-be customized in the file `soundyconsts.py` as can be the command which is used to clear the console after program start. Please
+be customized in the file `nfcplaylistconsts.py` as can be the command which is used to clear the console after program start. Please
 change the constant `CLEAR_COMMAND` to `cls` under Windows.
 
 Via the entry `activate_close_button` (allowed values are `true` and `false`) you can control whether the program can be stopped
@@ -185,11 +185,11 @@ program is started automatically without additional intervention. On top of that
 should not be adversely affected if the user closes the laptop and reopens it. Finally shutting down the system should also be possible without
 interacting with the operating system. 
 
-I solved the last problem by allowing to run a command after soundy was stopped, for instance by placing the corresponding function card on
+I solved the last problem by allowing to run a command after nfcplaylist was stopped, for instance by placing the corresponding function card on
 the reader or by clicking the close button of the main window. This command can be set by changing the value of `SHUTDOWN_COMMAND` in the module
-`soundyconsts.py`. I use the software on macOS and I tweaked the system in such a way that the logged on user can utilize `sudo` without
+`nfcplaylistconsts.py`. I use the software on macOS and I tweaked the system in such a way that the logged on user can utilize `sudo` without
 entering a password. After that setting `SHUTDOWN_COMMAND` to `sudo shutdown -h now` did the trick. You can prevent the shutdown command from
-being executed by creating a file called `maintenance` in the same directory where `ui_config` resides. When soundy detects the presence of this
+being executed by creating a file called `maintenance` in the same directory where `ui_config` resides. When nfclaylist detects the presence of this
 file it not only skips the execution of the shutdown command but also deletes the file. This makes sure that deleting the `maintenance` file after
 performing maintenance operations is not forgotten.
 

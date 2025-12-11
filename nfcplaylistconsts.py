@@ -23,7 +23,7 @@ ALL_ATRS = [ATR_E_PERSO, ATR_GIRO, ATR_EGK, ATR_DES_FIRE, ATR_NTAG, ATR_MIFARE_C
 
 # Change to cls on Windows
 CLEAR_COMMAND = 'clear'
-# Change this in order to shutdown the computer when soundy ends. On
+# Change this in order to shutdown the computer when nfcplaylist ends. On
 # macOS use "sudo shutdown -h now"
 SHUTDOWN_COMMAND = "echo shutdown"
 

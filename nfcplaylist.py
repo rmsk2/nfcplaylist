@@ -9,8 +9,8 @@ from pygame import mixer
 import pygame
 import cardy
 import playlist
-import soundy_ui
-from soundyconsts import *
+import nfcplaylist_ui
+from nfcplaylistconsts import *
 import uidfactory
 import acr122u
 
@@ -21,7 +21,7 @@ STATE_PLAYING = 1
 
 NO_SONG = -1
 
-class SoundyPlayer:
+class NfcPlayer:
     def __init__(self, ui, event_insert, event_remove, event_music_end, event_function, event_playing, event_pause, event_list_end, ui_stopped, err_generic, event_first_card):
         self.insert = event_insert
         self.remove = event_remove
@@ -90,16 +90,16 @@ class SoundyPlayer:
             return
         
         if event.card_id == self.card_id_rewind:
-            self.perform_function = SoundyPlayer.prep_function_execution(lambda x: x.reset(), FUNC_PLAYLIST_RESTART)
+            self.perform_function = NfcPlayer.prep_function_execution(lambda x: x.reset(), FUNC_PLAYLIST_RESTART)
             pygame.event.post(pygame.event.Event(self.function_event, kind=FUNC_PLAYLIST_RESTART, ctx=None))            
         elif event.card_id == self.card_id_restart:
-            self.perform_function = SoundyPlayer.prep_function_execution(lambda x: x.reset_play_time(), FUNC_SONG_RESTART)
+            self.perform_function = NfcPlayer.prep_function_execution(lambda x: x.reset_play_time(), FUNC_SONG_RESTART)
             pygame.event.post(pygame.event.Event(self.function_event, kind=FUNC_SONG_RESTART, ctx=None))
         elif event.card_id == self.card_id_skip:
-            self.perform_function = SoundyPlayer.prep_function_execution(lambda x: x.skip_song(), FUNC_SONG_SKIP)
+            self.perform_function = NfcPlayer.prep_function_execution(lambda x: x.skip_song(), FUNC_SONG_SKIP)
             pygame.event.post(pygame.event.Event(self.function_event, kind=FUNC_SONG_SKIP, ctx=None))
         elif event.card_id == self.card_id_prev:
-            self.perform_function = SoundyPlayer.prep_function_execution(lambda x: x.prev_song(), FUNC_SONG_PREV)
+            self.perform_function = NfcPlayer.prep_function_execution(lambda x: x.prev_song(), FUNC_SONG_PREV)
             pygame.event.post(pygame.event.Event(self.function_event, kind=FUNC_SONG_PREV, ctx=None))
         elif event.card_id == self.card_id_end:
             pygame.event.post(pygame.event.Event(self.function_event, kind=FUNC_END, ctx=None))
@@ -220,7 +220,7 @@ def run_player(config_dir):
     event_first_card = pygame.event.custom_type()
     pygame.mixer.music.set_endevent(event_music_end)
 
-    ui = soundy_ui.SoundyUI(event_ui_stopped)
+    ui = nfcplaylist_ui.NfcPlaylistUI(event_ui_stopped)
     ui.load_config(config_dir)
     #ui.logger = printing_logger
 
@@ -228,7 +228,7 @@ def run_player(config_dir):
         set_lang_ger()
         ui.set_std_message(all_messages[STD_MSG])
 
-    player = SoundyPlayer(ui, event_insert, event_remove, event_music_end, event_function, event_playing, event_pause, event_list_end, event_ui_stopped, event_err_generic, event_first_card)
+    player = NfcPlayer(ui, event_insert, event_remove, event_music_end, event_function, event_playing, event_pause, event_list_end, event_ui_stopped, event_err_generic, event_first_card)
     player.load_playlists(config_dir)
     player.first_handler = lambda x: acr122u.buzzer_off(x) if (str(x).find("ACS ACR122U") != -1) else None
 

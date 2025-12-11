@@ -1,5 +1,5 @@
 from smartcard.util import toHexString
-from soundyconsts import *
+from nfcplaylistconsts import *
 import desfire
 import ntag21x
 

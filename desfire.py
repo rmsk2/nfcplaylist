@@ -1,5 +1,5 @@
 import hashlib
-from soundyconsts import *
+from nfcplaylistconsts import *
 
 class DESFireUidReader(IUidReader):
     def __init__(self, watched_atr):

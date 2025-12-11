@@ -3,7 +3,7 @@
 import os
 from smartcard.CardMonitoring import CardMonitor, CardObserver
 from smartcard.util import toHexString
-from soundyconsts import *
+from nfcplaylistconsts import *
 import uidfactory
 
 

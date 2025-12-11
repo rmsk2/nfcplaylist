@@ -2,11 +2,11 @@ import os
 import sys
 import json
 import pygame
-import soundy
-from soundyconsts import *
+import nfcplaylist
+from nfcplaylistconsts import *
 
 
-class SoundyUI:
+class NfcPlaylistUI:
     def __init__(self, event_ui_stopped):
         self.stopped_event = event_ui_stopped
         self.white = (255, 255, 255)
@@ -119,7 +119,7 @@ class SoundyUI:
 
     def handle_function_event(self, event):
         self.sound_bell()
-        if event.kind == soundy.FUNC_END:
+        if event.kind == nfcplaylist.FUNC_END:
             pygame.time.wait(200)
             pygame.event.post(pygame.event.Event(self.stopped_event))
         elif event.kind == FUNC_PLAYLIST_RESTART:

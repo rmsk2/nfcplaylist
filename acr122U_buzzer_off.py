@@ -2,7 +2,7 @@
 
 import os
 from smartcard.CardMonitoring import CardMonitor, CardObserver
-from soundyconsts import *
+from nfcplaylistconsts import *
 import uidfactory
 import acr122u
 
