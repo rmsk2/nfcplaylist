@@ -189,7 +189,7 @@ I solved the last problem by allowing to run a command after nfcplaylist was sto
 the reader or by clicking the close button of the main window. This command can be set by changing the value of `SHUTDOWN_COMMAND` in the module
 `nfcplaylistconsts.py`. I use the software on macOS and I tweaked the system in such a way that the logged on user can utilize `sudo` without
 entering a password. After that setting `SHUTDOWN_COMMAND` to `sudo shutdown -h now` did the trick. You can prevent the shutdown command from
-being executed by creating a file called `maintenance` in the same directory where `ui_config` resides. When nfclpaylist detects the presence of this
+being executed by creating a file called `maintenance` in the same directory where `ui_config` resides. When nfcplaylist detects the presence of this
 file it not only skips the execution of the shutdown command but also deletes the file. This makes sure that deleting the `maintenance` file after
 performing maintenance operations is not forgotten.
 
