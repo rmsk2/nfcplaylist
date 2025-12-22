@@ -43,18 +43,22 @@ def main(playlist_dir, out_name, event_insert):
 
 if __name__ == "__main__":
     try:
+        os.system(CLEAR_COMMAND)
+
+        card_manager_exists = False
+        
         if len(sys.argv) < 3:
             print("usage: create_list <dir to list> <new playlist file>")
             sys.exit(42)
 
-        pygame.init()
-        os.system(CLEAR_COMMAND)
+        pygame.init()        
         event_insert = pygame.event.custom_type()
         event_remove = pygame.event.custom_type()
         event_err_generic = pygame.event.custom_type()
         event_first_card = pygame.event.custom_type()
 
         card_manager = cardy.CardManager(ALL_ATRS, uidfactory.UidReaderRepo(), event_insert, event_remove, event_err_generic, event_first_card)
+        card_manager_exists = True
         card_manager.start()
 
         main(sys.argv[1], sys.argv[2], event_insert)
@@ -64,6 +68,7 @@ if __name__ == "__main__":
     except Exception as e:
         print(e)
     finally:
-        card_manager.destroy()
+        if card_manager_exists:
+            card_manager.destroy()
         pygame.quit()
         

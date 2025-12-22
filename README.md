@@ -194,7 +194,7 @@ file it not only skips the execution of the shutdown command but also deletes th
 performing maintenance operations is not forgotten.
 
 The other problems (auto logon after reboot, autostart of a program after logon, preventing sleep mode (even when lid is closed)) were also overcome
-by configuring macOS correspondigly.
+by configuring macOS correspondingly.
 
 Another potential problem was created by the power management functions of some PC speakers which turn themselves off when no sound is played 
 but fail to turn themselves back on again when playing back the audio book is resumed. I solved this problem by playing a "beep" sound each time 
