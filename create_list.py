@@ -6,8 +6,8 @@ from pathlib import Path
 import playlist
 import cardy
 from nfcplaylistconsts import *
-import desfire
 import pygame
+import uidfactory
 
 
 def gen_listing(src_path):
@@ -52,8 +52,9 @@ if __name__ == "__main__":
         event_insert = pygame.event.custom_type()
         event_remove = pygame.event.custom_type()
         event_err_generic = pygame.event.custom_type()
+        event_first_card = pygame.event.custom_type()
 
-        card_manager = cardy.CardManager(ALL_ATRS, desfire.DESFireUidReader(ATR_DES_FIRE), event_insert, event_remove, event_err_generic)
+        card_manager = cardy.CardManager(ALL_ATRS, uidfactory.UidReaderRepo(), event_insert, event_remove, event_err_generic, event_first_card)
         card_manager.start()
 
         main(sys.argv[1], sys.argv[2], event_insert)
