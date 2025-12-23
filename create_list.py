@@ -8,6 +8,7 @@ import cardy
 from nfcplaylistconsts import *
 import pygame
 import uidfactory
+import collections
 
 
 def gen_listing(src_path):
@@ -41,25 +42,38 @@ def main(playlist_dir, out_name, event_insert):
     create_new_playlist(playlist_dir, out_name, card_id, playlist_name)
 
 
+# Ok let's massively overengineer this ;-)
+class Deferrer:
+    def __init__(self):
+        self._deferred = collections.deque()
+
+    def defer(self, f):
+        self._deferred.appendleft(f)
+
+    def unwind(self):
+        for f in self._deferred:
+            f()
+
+
 if __name__ == "__main__":
     try:
         os.system(CLEAR_COMMAND)
-
-        card_manager_exists = False
+        deferrer = Deferrer()
         
         if len(sys.argv) < 3:
             print("usage: create_list <dir to list> <new playlist file>")
             sys.exit(42)
 
-        pygame.init()        
+        pygame.init()
+        deferrer.defer(pygame.quit)
         event_insert = pygame.event.custom_type()
         event_remove = pygame.event.custom_type()
         event_err_generic = pygame.event.custom_type()
         event_first_card = pygame.event.custom_type()
 
         card_manager = cardy.CardManager(ALL_ATRS, uidfactory.UidReaderRepo(), event_insert, event_remove, event_err_generic, event_first_card)
-        card_manager_exists = True
         card_manager.start()
+        deferrer.defer(card_manager.destroy)
 
         main(sys.argv[1], sys.argv[2], event_insert)
         print("\nNew playlist successfully created")
@@ -68,7 +82,5 @@ if __name__ == "__main__":
     except Exception as e:
         print(e)
     finally:
-        if card_manager_exists:
-            card_manager.destroy()
-        pygame.quit()
+        deferrer.unwind()
         
