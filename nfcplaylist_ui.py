@@ -95,7 +95,7 @@ class NfcPlaylistUI:
         sound.play()
 
         if init_was_performed:
-            pygame.time.wait(75)
+            pygame.time.wait(200)
             nfcplaylist.mixer_stop()
 
     def handle_error(self, err_type, err_msg):
