@@ -120,6 +120,7 @@ class NfcPlayer:
                 if not pathlib.Path(pl.current_song()).exists():
                     raise Exception("File does not exist")
 
+                _ = mixer_init()
                 mixer.music.load(pl.current_song())
                 start_pos = pl.get_play_time()
 
@@ -143,6 +144,7 @@ class NfcPlayer:
         self.playing_id = NO_SONG
         self.state = STATE_IDLE
         mixer.music.stop()
+        mixer_stop()
         pygame.event.post(pygame.event.Event(self.event_pause))
 
     def handle_song_end(self):
@@ -154,6 +156,7 @@ class NfcPlayer:
             self.titles[self.playing_id].reset()
             self.playing_id = NO_SONG
             self.state = STATE_IDLE
+            mixer_stop()
             pygame.event.post(pygame.event.Event(self.event_list_end))
             return
         
@@ -189,6 +192,19 @@ class NfcPlayer:
                 self._end_program = True
 
 
+def mixer_init():
+    if pygame.mixer.get_init() == None:
+        mixer.init()
+        return True
+    else:
+        return False
+
+
+def mixer_stop():
+    if pygame.mixer.get_init() != None:
+        mixer.quit()
+
+
 def init_reader(wait_time):
     sys.stdout.write("Waiting for reader ... ")
     sys.stdout.flush()
@@ -206,7 +222,6 @@ def run_player(config_dir):
     # Last parameter is buffer size. Maybe increase it further if sound starts to lag
     mixer.pre_init(44100, -16, 2, 2048)
     pygame.init()
-    mixer.init()
 
     event_insert = pygame.event.custom_type()
     event_remove = pygame.event.custom_type()

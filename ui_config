@@ -2,14 +2,14 @@
     "sounds": {
         "info_sound": "dialog-information.oga",
         "warning_sound": "dialog-warning.oga",
-        "error_sound": "dialog-error.oga"    
+        "error_sound": "dialog-error.oga"
     },
     "ids": {
-        "rewind": 60798,
-        "restart": 64062,
-        "end": 36871,
-        "skip": 54743,
-        "prev": 55206
+        "rewind": 1,
+        "restart": 13800,
+        "end": 52065,
+        "skip": 2,
+        "prev": 0
     },
     "size": {
         "x_size": 1280,

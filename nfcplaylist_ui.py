@@ -5,6 +5,7 @@ import pygame
 import nfcplaylist
 from nfcplaylistconsts import *
 
+VERSION_STRING = "1.0.2"
 
 class NfcPlaylistUI:
     def __init__(self, event_ui_stopped):
@@ -63,6 +64,9 @@ class NfcPlaylistUI:
     def set_std_message(self, msg):
         self._text = msg
 
+    def set_caption_txt(self, txt):
+        pygame.display.set_caption(f"{txt} - Version {VERSION_STRING}")
+
     def redraw(self):
         text = self._font.render(self._text, True, self.black, self._background_col)
         text_rect = text.get_rect()
@@ -77,7 +81,7 @@ class NfcPlaylistUI:
 
     def start(self):
         self._display_surface = pygame.display.set_mode((self._x_size, self._y_size))
-        pygame.display.set_caption(all_messages[CAPTION_DEFAULT])
+        self.set_caption_txt(all_messages[CAPTION_DEFAULT])
         self._font = pygame.font.Font('freesansbold.ttf', self._font_size)
         self._func_font = pygame.font.Font('freesansbold.ttf', self._func_font_size)
 
@@ -85,8 +89,14 @@ class NfcPlaylistUI:
         self.sound_bell()
 
     def sound_bell(self):
+        init_was_performed = nfcplaylist.mixer_init()
+
         sound = pygame.mixer.Sound(self._sound_error)
         sound.play()
+
+        if init_was_performed:
+            pygame.time.wait(75)
+            nfcplaylist.mixer_stop()
 
     def handle_error(self, err_type, err_msg):
         self._logger(err_msg)
@@ -107,19 +117,21 @@ class NfcPlaylistUI:
             self.sound_bell()
 
         self._text = all_messages[MSG_PLAY_FORMAT_STR].format(song=event.song, num_songs=event.num_songs)
-        pygame.display.set_caption(event.play_list_name)
+        self.set_caption_txt(event.play_list_name)
 
     def handle_pause(self):
-        pygame.display.set_caption(all_messages[CAPTION_DEFAULT])
+        self.set_caption_txt(all_messages[CAPTION_DEFAULT])
         self._text = all_messages[STD_MSG]
 
     def handle_list_end(self):
-        pygame.display.set_caption(all_messages[CAPTION_DEFAULT])
+        self.set_caption_txt(all_messages[CAPTION_DEFAULT])
         self._text = all_messages[STD_MSG]
 
     def handle_function_event(self, event):
         self.sound_bell()
         if event.kind == nfcplaylist.FUNC_END:
+            self._text = all_messages[MSG_SHUTDOWN]
+            self.redraw()
             pygame.time.wait(200)
             pygame.event.post(pygame.event.Event(self.stopped_event))
         elif event.kind == FUNC_PLAYLIST_RESTART:

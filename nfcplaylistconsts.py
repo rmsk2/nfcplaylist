@@ -37,6 +37,7 @@ MSG_PLAYLIST_BEGINING = "Go back to beginning of audio book"
 MSG_RESTART_SONG = "Go back to beginning of chapter"
 MSG_SKIP_SONG = "To next chapter"
 MSG_NEXT_SONG = "To previous chapter"
+MSG_SHUTDOWN = "Good bye!"
 MSG_PLAY_FORMAT_STR = "Chapter {song} of {num_songs}"
 
 all_messages = {
@@ -49,6 +50,7 @@ all_messages = {
     MSG_SKIP_SONG: MSG_SKIP_SONG,
     MSG_NEXT_SONG: MSG_NEXT_SONG,
     MSG_PLAY_FORMAT_STR: MSG_PLAY_FORMAT_STR,
+    MSG_SHUTDOWN: MSG_SHUTDOWN
 }
 
 NO_CARD_ID = -1
@@ -65,6 +67,7 @@ def set_lang_ger():
     all_messages[MSG_SKIP_SONG] = "Zum nächsten Kapitel"
     all_messages[MSG_NEXT_SONG] = "Zum vorigen Kapitel"
     all_messages[MSG_PLAY_FORMAT_STR] = "Kapitel {song} von {num_songs}"
+    all_messages[MSG_SHUTDOWN] = "Auf Wiedersehen!"
 
 
 # A UiReader knows how to calculate an individual identity for
