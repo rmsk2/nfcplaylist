@@ -120,7 +120,8 @@ does not apply to the music files on the playlist. These can be [MP3 or OGG](htt
 
 In the `ids` "section" you can configure which cards are used as `function cards` as specified by their id. As written above the
 card ids of DESFire and other cards known to this software can de determined using `id_gen.py`. The ids of cards which are identified 
-by their ATR only is determined by their position in the list `ALL_ATRS` contained in the module `nfcplaylistconsts.py`.
+by their ATR only is determined by their position in the list `ALL_ATRS` contained in the module `nfcplaylistconsts.py`. You can
+automate the assignment of function cards by using the tool `func_cards.py`.
 
 The "section" `size` specifies the size of the UI in pixels as well as the font sizes used for displaying text. Finally the "key" 
 `wait_reader_sec` determines how long the software waits for the reader to become ready. The messages displayed on the UI can
