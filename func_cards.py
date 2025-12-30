@@ -5,28 +5,32 @@ import cli_tools
 import json
 
 
-def load_config(config_path):
-    try:
-        with(open(config_path, "r") as f):
-            all_data = json.load(f)
-    except:
-        print("Unable to load config file")
-        sys.exit(42)
+class ConfigHelper:
+    def __init__(self, config_path):
+        self._config_path = config_path
 
-    return all_data 
+    def load(self):
+        try:
+            with(open(self._config_path, "r") as f):
+                all_data = json.load(f)
+        except:
+            print("Unable to load config file")
+            sys.exit(42)
 
+        return all_data
 
-def save_config(config_path, config_data):
-    try:
-        with(open(config_path, "wb") as f):
-            f.write(config_data.encode("utf-8"))
-    except:
-        print("Unable to save config file")
-        sys.exit(42)
+    def save(self, config_data):
+        try:
+            with(open(self._config_path, "wb") as f):
+                f.write(config_data.encode("utf-8"))
+        except:
+            print("Unable to save config file")
+            sys.exit(42)
 
 
 def assign_cards(config_path, event_insert):
-    config_data = load_config(config_path)
+    conf = ConfigHelper(config_path)
+    config_data = conf.load()
     print("Assign function card ids")
     print("========================")
     print()
@@ -44,7 +48,7 @@ def assign_cards(config_path, event_insert):
 
     decision = input("Overwrite existing config (yes/no)? ")
     if decision.lower() == "yes":
-        save_config(config_path, new_config)
+        conf.save(new_config)
     else:
         print(new_config)
 
