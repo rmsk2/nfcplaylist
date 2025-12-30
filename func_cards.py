@@ -31,6 +31,7 @@ class ConfigHelper:
 def assign_cards(config_path, event_insert):
     conf = ConfigHelper(config_path)
     config_data = conf.load()
+    
     print("Assign function card ids")
     print("========================")
     print()
