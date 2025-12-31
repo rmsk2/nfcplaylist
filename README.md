@@ -134,6 +134,20 @@ intended purpose. In addition you can switch all text messages shown to german w
 of the previously mentioned keys are missing then default values are used. The default is to deactivate the close button and to show
 messages in english.
 
+If the key `shutdown_command` is present its value will be used as a command to execute when `nfcplaylist` is stopped
+(see [below](#other-considerations) for the reasons why this is desireable and useful).
+
+If a key `msgs` is present its subvalues will be used to override the messages defined in `nfcplaylistconsts.py`. This can be used to
+change some or even all of the messages which are presented to the user. Here an example of these two keys in action.
+
+```
+    "shutdown_command": "sudo shutdown -h now",
+    "msgs": {
+        "std_msg": "Hallo Bernd",
+        "msg_shutdown": "Tschüss Bernd!"
+    }
+```
+
 ## Config of playlists
 
 Any `.json` file in the config dir is interpreted as a playlist. playlists have to have the following structure.
