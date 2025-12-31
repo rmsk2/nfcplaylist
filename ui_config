@@ -5,11 +5,11 @@
         "error_sound": "dialog-error.oga"
     },
     "ids": {
-        "rewind": 1,
-        "restart": 13800,
-        "end": 52065,
-        "skip": 2,
-        "prev": 0
+        "rewind": 30236,
+        "restart": 7763,
+        "end": 40961,
+        "skip": 13451,
+        "prev": 34017
     },
     "size": {
         "x_size": 1280,

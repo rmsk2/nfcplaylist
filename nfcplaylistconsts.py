@@ -30,28 +30,28 @@ SHUTDOWN_COMMAND = "echo shutdown"
 
 # This should be as long as the longest string to be displayed
 EMPTY_STR = '                                  '
-ERR_MSG_LOAD_PLAYLIST = "Unable to load playlists"
-STD_MSG = "Hello"
-CAPTION_DEFAULT = "Simple audio book player"
-ERR_MSG_LOAD_CONFIG = "Unable to load configuration"
-MSG_PLAYLIST_BEGINING = "Go back to beginning of audio book"
-MSG_RESTART_SONG = "Go back to beginning of chapter"
-MSG_SKIP_SONG = "To next chapter"
-MSG_NEXT_SONG = "To previous chapter"
-MSG_SHUTDOWN = "Good bye!"
-MSG_PLAY_FORMAT_STR = "Chapter {song} of {num_songs}"
+ERR_MSG_LOAD_PLAYLIST = "err_msg_load_playlist"
+STD_MSG = "std_msg"
+CAPTION_DEFAULT = "caption_default"
+ERR_MSG_LOAD_CONFIG = "err_msg_load_config"
+MSG_PLAYLIST_BEGINING = "msg_playlist_beginning"
+MSG_RESTART_SONG = "msg_restart_song"
+MSG_SKIP_SONG = "msg_skip_song"
+MSG_NEXT_SONG = "msg_next_song"
+MSG_SHUTDOWN = "msg_shutdown"
+MSG_PLAY_FORMAT_STR = "msg_play_format_str"
 
 all_messages = {
-    ERR_MSG_LOAD_PLAYLIST: ERR_MSG_LOAD_PLAYLIST,
-    STD_MSG: STD_MSG,
-    CAPTION_DEFAULT: CAPTION_DEFAULT,
-    ERR_MSG_LOAD_CONFIG: ERR_MSG_LOAD_CONFIG,
-    MSG_PLAYLIST_BEGINING: MSG_PLAYLIST_BEGINING,
-    MSG_RESTART_SONG: MSG_RESTART_SONG,
-    MSG_SKIP_SONG: MSG_SKIP_SONG,
-    MSG_NEXT_SONG: MSG_NEXT_SONG,
-    MSG_PLAY_FORMAT_STR: MSG_PLAY_FORMAT_STR,
-    MSG_SHUTDOWN: MSG_SHUTDOWN
+    ERR_MSG_LOAD_PLAYLIST: "Unable to load playlists",
+    STD_MSG: "Hello",
+    CAPTION_DEFAULT: "Simple audio book player",
+    ERR_MSG_LOAD_CONFIG: "Unable to load configuration",
+    MSG_PLAYLIST_BEGINING: "Go back to beginning of audio book",
+    MSG_RESTART_SONG: "Go back to beginning of chapter",
+    MSG_SKIP_SONG: "To next chapter",
+    MSG_NEXT_SONG: "To previous chapter",
+    MSG_PLAY_FORMAT_STR: "Chapter {song} of {num_songs}",
+    MSG_SHUTDOWN: "Good bye!"
 }
 
 NO_CARD_ID = -1
@@ -69,6 +69,23 @@ def set_lang_ger():
     all_messages[MSG_NEXT_SONG] = "Zum vorigen Kapitel"
     all_messages[MSG_PLAY_FORMAT_STR] = "Kapitel {song} von {num_songs}"
     all_messages[MSG_SHUTDOWN] = "Auf Wiedersehen!"
+
+
+def set_shutdown_command(cmd):
+    global SHUTDOWN_COMMAND
+    SHUTDOWN_COMMAND = cmd
+
+
+def get_shutdown_command():
+    return SHUTDOWN_COMMAND
+
+
+def get_clear_command():
+    return CLEAR_COMMAND
+
+
+def set_message(key, value):
+    all_messages[key] = value
 
 
 # A UiReader knows how to calculate an individual identity for

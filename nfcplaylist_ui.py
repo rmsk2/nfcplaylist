@@ -5,7 +5,7 @@ import pygame
 import nfcplaylist
 from nfcplaylistconsts import *
 
-VERSION_STRING = "1.0.2"
+VERSION_STRING = "1.0.3"
 
 class NfcPlaylistUI:
     def __init__(self, event_ui_stopped):
@@ -32,6 +32,10 @@ class NfcPlaylistUI:
         try:
             with(open(os.path.join(config_dir, "ui_config"), "r") as f):
                 all_data = json.load(f)
+
+            if "shutdown_command" in all_data.keys():
+                cmd = all_data["shutdown_command"]
+                set_shutdown_command(cmd)
         except:
             print(all_messages[ERR_MSG_LOAD_CONFIG])
             sys.exit(42)
@@ -60,6 +64,13 @@ class NfcPlaylistUI:
     @property
     def ui_config(self):
         return self._ui_config
+
+    def eval_messages(self):
+        config = self._ui_config
+
+        if "msgs" in config.keys():
+            for i in config["msgs"].keys():
+                set_message(i, config["msgs"][i])
 
     def set_std_message(self, msg):
         self._text = msg

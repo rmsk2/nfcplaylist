@@ -241,7 +241,9 @@ def run_player(config_dir):
 
     if ("lang" in ui.ui_config) and (ui.ui_config["lang"] == "ger"):
         set_lang_ger()
-        ui.set_std_message(all_messages[STD_MSG])
+
+    ui.eval_messages()
+    ui.set_std_message(all_messages[STD_MSG])
 
     player = NfcPlayer(ui, event_insert, event_remove, event_music_end, event_function, event_playing, event_pause, event_list_end, event_ui_stopped, event_err_generic, event_first_card)
     player.load_playlists(config_dir)
@@ -286,7 +288,7 @@ def maintenance_requested(config_dir):
 
 
 def main():
-    os.system(CLEAR_COMMAND)
+    os.system(get_clear_command())
 
     config_dir = "./"
     if len(sys.argv) > 1:
@@ -295,7 +297,7 @@ def main():
     run_player(config_dir)
 
     if not maintenance_requested(config_dir):
-        os.system(SHUTDOWN_COMMAND)
+        os.system(get_shutdown_command())
 
 
 if __name__ == "__main__":
