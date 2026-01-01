@@ -1,3 +1,4 @@
+import hashlib
 from typing import Any
 
 # Function codes
@@ -100,3 +101,8 @@ class IUidReader:
 
     def get_name(self) -> str:
         return ""
+
+    @staticmethod
+    def determine_id(data: bytes) -> int:
+        t = hashlib.md5(data).digest()[0:2]
+        return t[1]*256 + t[0]

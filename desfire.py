@@ -1,4 +1,3 @@
-import hashlib
 from nfcplaylistconsts import *
 
 class DESFireUidReader(IUidReader):
@@ -8,10 +7,6 @@ class DESFireUidReader(IUidReader):
         self._apdu_get_version = [0x90, 0x60, 0x00, 0x00, 0x00]
         self._apdu_read_next   = [0x90, 0xAF, 0x00, 0x00, 0x00]
     
-    def _uid_to_card_id(self, d):
-        t = hashlib.md5(bytes(d)).digest()[0:2]
-        return t[1]*256 + t[0]
-
     def get_atr(self):
         return self._atr
     
@@ -23,7 +18,7 @@ class DESFireUidReader(IUidReader):
         if uid == None:
             return NO_CARD_ID, False
 
-        new_id = self._uid_to_card_id(uid)
+        new_id = IUidReader.determine_id(bytes(uid))
 
         return new_id, True
 

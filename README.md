@@ -100,7 +100,9 @@ after the first card has been successfully read if an ACR122U is detected to be 
 As `id_gen.py` simply calculates a hash over the serial number read from the card and uses the first two bytes of this
 hash as an id (see method `uid_to_card_id()` of class `DESFireUidReader` in `desfire.py` or `Ntag215UidReader` in `ntag21x.py`) 
 it is not that unlikely that two of your cards are assigned the same id. In that case you could use some other bytes from the hash, 
-hash some additional data or use more hash bytes to make sure all of your cards end up having a different id.
+hash some additional data or use more hash bytes to make sure all of your cards end up having a different id. If you run into such
+problems you could adapt the static method `determine_id()` of class `IUidReader` (defined in `nfcplaylistsconsts.py`) accorddingly.
+`determine_id()` is called by `uid_to_card_id()` as implemented by `DESFireUidReader` and `Ntag215UidReader`.
 
 # Running the software and configuration
 

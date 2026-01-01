@@ -1,4 +1,3 @@
-import hashlib
 from smartcard.util import toHexString
 from nfcplaylistconsts import *
 
@@ -19,8 +18,7 @@ class Ntag215UidReader(IUidReader):
         if uid == None:
             return NO_CARD_ID, False
 
-        t = hashlib.md5(bytes(uid)).digest()[0:2]
-        new_id = t[1]*256 + t[0]
+        new_id = IUidReader.determine_id(bytes(uid))
 
         return new_id, True
 
