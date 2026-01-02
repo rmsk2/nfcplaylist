@@ -5,7 +5,7 @@ import pygame
 import nfcplaylist
 from nfcplaylistconsts import *
 
-VERSION_STRING = "1.0.4"
+VERSION_STRING = "1.0.5"
 
 class NfcPlaylistUI:
     def __init__(self, event_ui_stopped):

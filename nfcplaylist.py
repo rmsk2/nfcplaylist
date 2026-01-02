@@ -39,6 +39,7 @@ class NfcPlayer:
         self.event_first_card = event_first_card
         self.ui = ui
         self.activate_close_button = False
+        self._config_dir = ""
 
         c = ui.ui_config["ids"]
         self.card_id_rewind = c["rewind"]
@@ -49,21 +50,36 @@ class NfcPlayer:
         self.titles = {}
         self._first_handler = lambda x: None
 
+    def get_playlists(self, config_dir):
+        all_files = []
+        for file in os.listdir(config_dir):
+            if file.endswith(".json"):
+                all_files.append(os.path.join(config_dir, file))
+
+        return list(map(playlist.PlayList.from_json, all_files))
+
+    def assign_playlists(self, pls):
+        self.titles = {}
+        for i in pls:
+            self.titles[i.card_id] = i
+
+    def reload_playlists(self):
+        try:
+            titles_raw = self.get_playlists(self._config_dir)
+        except:
+            return
+
+        self.assign_playlists(titles_raw)
+
     def load_playlists(self, config_dir):
         try:
-            all_files = []
-            for file in os.listdir(config_dir):
-                if file.endswith(".json"):
-                    all_files.append(os.path.join(config_dir, file))
-
-            titles_raw = list(map(playlist.PlayList.from_json, all_files))
+            titles_raw = self.get_playlists(config_dir)
         except:
             print(all_messages[ERR_MSG_LOAD_PLAYLIST])
             sys.exit(42)
 
-        self.titles = {}
-        for i in titles_raw:
-            self.titles[i.card_id] = i
+        self.assign_playlists(titles_raw)
+        self._config_dir = config_dir
 
     @staticmethod
     def prep_function_execution(f, ctx):
@@ -89,6 +105,8 @@ class NfcPlayer:
         if self.state != STATE_IDLE:
             return
         
+        self.reload_playlists()
+
         if event.card_id == self.card_id_rewind:
             self.perform_function = NfcPlayer.prep_function_execution(lambda x: x.reset(), FUNC_PLAYLIST_RESTART)
             pygame.event.post(pygame.event.Event(self.function_event, kind=FUNC_PLAYLIST_RESTART, ctx=None))            

@@ -1,10 +1,10 @@
 {
-    "play_list": "Test playlist",
+    "play_list": "Test playlist reloaded",
     "file_name": "./test_play_list.json",
     "current_title": 0,
-    "play_time": 0.0,
-    "card_id": 51918,
-    "data_dir": "/user/test/testdata",
+    "play_time": 24.13,
+    "card_id": 7763,
+    "data_dir": "./",
     "titles": [
         "track1.mp3",
         "track2.mp3",
