@@ -6,7 +6,7 @@ import playlist
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Update playlist from zip file")
+    parser = argparse.ArgumentParser(description="Install new audio book")
     parser.add_argument("--zip-file", required=True, help="Path to the zip file containing audiobook data")
     parser.add_argument("--target-dir", required=True, help="Target directory to extract audibook data to")
     parser.add_argument("--list-name", required=True, help="Filename of the existing playlist to update")
