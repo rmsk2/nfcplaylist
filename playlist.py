@@ -1,6 +1,9 @@
 import os.path
 import json
 import functools
+from os import listdir
+from os.path import isfile, join
+from pathlib import Path
 
 
 class PlayList:
@@ -109,3 +112,20 @@ class PlayList:
     def reset(self):
         self.play_time = 0.0
         self.current_title = 0
+
+
+def gen_listing(src_path):
+    only_files = [f for f in listdir(src_path) if isfile(join(src_path, f))]
+    only_files.sort()
+
+    return only_files
+
+
+def create_new_playlist(dir_to_list, out_name, card_id, playlist_name):
+    data_dir = Path(dir_to_list)
+
+    play_list = PlayList(card_id, out_name, gen_listing(data_dir))
+    play_list.play_list = playlist_name
+    play_list.data_dir = str(data_dir)
+
+    play_list.save()
