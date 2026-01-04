@@ -196,7 +196,7 @@ existing playlist. Both programs accept the following parameters:
 - `--target-dir` which has to reference a directory into which the audio book package is to be extracted
 - `--list-name` which has to specify the name of a new or an exisiting playlist file
 
-Here an example which illustrates the usage of `create_list.py` and `replace_audio_book.py`:
+If the target directory does not exist it is created. Here an example which illustrates the usage of `create_list.py` and `replace_audio_book.py`:
 
 ```
 python3 create_list.py --zip-file ../audio_book/example.zip --target-dir /home/user/audio_books/example/ --list-name example_new.json
