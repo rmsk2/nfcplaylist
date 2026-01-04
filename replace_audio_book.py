@@ -1,36 +1,21 @@
-import sys
 import argparse
 import os
-import zipfile
 import playlist
-
+import book_package
 
 def main():
     parser = argparse.ArgumentParser(description="Install new audio book")
     parser.add_argument("--zip-file", required=True, help="Path to the zip file containing audiobook data")
-    parser.add_argument("--target-dir", required=True, help="Target directory to extract audibook data to")
+    parser.add_argument("--target-dir", required=True, help="Target directory to extract audiobook data to")
     parser.add_argument("--list-name", required=True, help="Filename of the existing playlist to update")
     
     args = parser.parse_args()
 
     print(f"Importing audio book from {args.zip_file}")
     
-    try:
-        os.mkdir(args.target_dir)
-    except FileExistsError:
-        pass
-    
-    sys.stdout.write("Unzipping data ... ")
-    sys.stdout.flush()
-
-    with zipfile.ZipFile(args.zip_file, 'r') as zip_ref:
-        zip_ref.extractall(args.target_dir)
-    
-    print("done")
-
-    name_path = os.path.join(args.target_dir, "info", "name.txt")
-    with open(name_path, "r", encoding="utf-8") as f:
-        audio_book_name = f.read().strip()
+    package = book_package.AudioBookPackage(args.zip_file)
+    audio_book_info = package.install(args.target_dir)
+    audio_book_name = audio_book_info['audio_book_name']
     
     print(f"Audio book '{audio_book_name}' found")
 
