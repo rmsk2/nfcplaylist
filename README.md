@@ -183,10 +183,30 @@ ISO 14443 Type A cards and by the position of the ATR in `ALL_ATRS` for all othe
 files are stored. The list `titles` specifies the names and positions of the individual tracks on this playlist, i.e. the sequence in this list
 determines the sequence in which these tracks are played back.
 
-You can use the program `create_list.py` from this repo to create a new playlist. Execute `python3 create_list.py <dir to list> <new playlist file>`,
-where `<dir to list>` is the directory which contains the music files of the playlist and `<new playlist file>` has to specify the name of the file
-in which the new playlist is to be saved. The contents of the given directory is listed, sorted and added to the playlist as its `titles` component.
-Additionally you have to enter a name for the playlist and put the desired `playlist card` on the reader so that its id can be determined.
+## Audio book packages and their installation
+
+There is some tooling to automate the installation of new audio books on the target system which is based on the notion of an audio book package.
+Such a package is a ZIP file which contains the audio data in the ZIP's "root" directory and a single subdir called `info`. In this directory there
+has to be a text file called `name.txt` which is intended to hold the tile of the audio book.
+
+You can use the programs `create_list.py` and `replace_audio_book.py` from this repo to create a new playlist or to replace the contents of an
+existing playlist. Both programs accept the following parameters:
+
+- `--zip-file` which has to reference the ZIP file containing the audio book packagae
+- `--target-dir` which has to reference a directory into which the audio book package is to be extracted
+- `--list-name` which has to specify the name of a new or an exisiting playlist file.
+
+Here an example which illustrates the usage of `create_list.py` and `replace_audio_book.py`:
+
+```
+python3 create_list.py --zip-file ../audio_book/example.zip --target-dir /home/user/audio_books/example/ --list-name example_new.json
+python3 replace_audio_book.py --zip-file ../audio_book/example.zip --target-dir /home/user/audio_books/example/ --list-name example_existing.json
+```
+
+`create_list.py` lets the user select a corresponding playlist card by determining the id of a card which is placed on the reader, whereas 
+`replace_audio_book.py` reads the corresponding card id from the existing playlist. Both programs read `name.txt` of the audio book package to set the
+title of the playlist. They also perform the unzip operation. It is possible to extract the contents of a ZIP file several times into the same target
+directory without any adverse effects.
 
 # Installation on macOS
 
