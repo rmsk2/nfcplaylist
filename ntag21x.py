@@ -2,8 +2,9 @@ from smartcard.util import toHexString
 from nfcplaylistconsts import *
 
 class Ntag215UidReader(IUidReader):
-    def __init__(self, watched_atr):
+    def __init__(self, watched_atr, card_name = "Ntag215"):
         self._atr = watched_atr
+        self._name = card_name
         # https://www.acs.com.hk/download-manual/419/API-ACR122U-2.04.pdf
         self._apdu_get_uid = [0xFF, 0xCA, 0x00, 0x00, 0x00]
     
@@ -11,7 +12,7 @@ class Ntag215UidReader(IUidReader):
         return self._atr
     
     def get_name(self):
-        return "Ntag215"
+        return self._name
 
     def make_card_id(self, card):
         uid = self._read_ntag_uid(card)
