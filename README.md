@@ -187,14 +187,14 @@ determines the sequence in which these tracks are played back.
 
 There is some tooling to automate the installation of new audio books on the target system which is based on the notion of an audio book package.
 Such a package is a ZIP file which contains the audio data in the ZIP's "root" directory and a single subdir called `info`. In this directory there
-has to be a text file called `name.txt` which is intended to hold the tile of the audio book.
+has to be a text file called `name.txt` which is intended to hold the title of the audio book.
 
 You can use the programs `create_list.py` and `replace_audio_book.py` from this repo to create a new playlist or to replace the contents of an
 existing playlist. Both programs accept the following parameters:
 
-- `--zip-file` which has to reference the ZIP file containing the audio book packagae
+- `--zip-file` which has to reference the ZIP file containing the audio book package
 - `--target-dir` which has to reference a directory into which the audio book package is to be extracted
-- `--list-name` which has to specify the name of a new or an exisiting playlist file.
+- `--list-name` which has to specify the name of a new or an exisiting playlist file
 
 Here an example which illustrates the usage of `create_list.py` and `replace_audio_book.py`:
 
