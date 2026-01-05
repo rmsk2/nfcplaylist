@@ -63,10 +63,11 @@ It also seemed to be impractical to use the full seven byte serial number in the
 Put a card on the reader to get its id
 Press Enter to stop
 
-DESFire card. Card id: 51918
-Ntag215 card. Card id: 63840
-Card type unknown. ATR 3B 8F 80 01 80 4F 0C A0 00 00 03 06 03 00 01 00 00 00 00 6A
+DESFire card. Card id: 58855
+Mifare Classic card. Card id: 7763
+Mifare Ultralight card. Card id: 24586
 German national ID card. Card id: 0
+Card type unknown. ATR 3B 85 80 01 80 73 C8 21 10 0E
 ```
 
 or the full ATR for unknown cards. You might say that using a smartcard intended for security purposes in a scenario like this is 
