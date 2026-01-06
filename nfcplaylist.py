@@ -282,8 +282,7 @@ def run_player(config_dir):
 
         while not player.end_program:
             player.work_event_queue()
-            ui.redraw()
-            pygame.display.update()
+            ui.force_redraw()
     except KeyboardInterrupt:
         pass
     finally:

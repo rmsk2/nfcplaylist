@@ -5,7 +5,7 @@ import pygame
 import nfcplaylist
 from nfcplaylistconsts import *
 
-VERSION_STRING = "1.0.5"
+VERSION_STRING = "1.0.6"
 
 class NfcPlaylistUI:
     def __init__(self, event_ui_stopped):
@@ -90,6 +90,10 @@ class NfcPlaylistUI:
         text_rect.center = (self._x_size // 2, self._y_size // 4)
         self._display_surface.blit(text, text_rect)
 
+    def force_redraw(self):
+        self.redraw()
+        pygame.display.update()
+
     def start(self):
         self._display_surface = pygame.display.set_mode((self._x_size, self._y_size))
         self.set_caption_txt(all_messages[CAPTION_DEFAULT])
@@ -115,8 +119,7 @@ class NfcPlaylistUI:
         b = self._background_col
 
         self._background_col = self._err_map[err_type]
-        self.redraw()
-        pygame.display.update()
+        self.force_redraw()
         pygame.time.wait(175)
 
         self._text = h
