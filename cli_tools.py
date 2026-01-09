@@ -2,7 +2,7 @@ import pygame
 import uidfactory
 import collections
 import cardy
-from nfcplaylistconsts import *
+import nfcplaylistconsts
 
 
 def wait_for_card(event_insert):
@@ -40,7 +40,7 @@ def main(payload_func):
         event_err_generic = pygame.event.custom_type()
         event_first_card = pygame.event.custom_type()
 
-        card_manager = cardy.CardManager(ALL_ATRS, uidfactory.UidReaderRepo(), event_insert, event_remove, event_err_generic, event_first_card)
+        card_manager = cardy.CardManager(nfcplaylistconsts.ALL_ATRS, uidfactory.UidReaderRepo(), event_insert, event_remove, event_err_generic, event_first_card)
         card_manager.start()
         deferrer.defer(card_manager.destroy)
 

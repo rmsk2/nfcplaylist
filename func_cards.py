@@ -1,6 +1,6 @@
 import sys
 import os
-from nfcplaylistconsts import *
+import nfcplaylistconsts
 import cli_tools
 import json
 
@@ -55,7 +55,7 @@ def assign_cards(config_path, event_insert):
 
 
 if __name__ == "__main__":
-    os.system(CLEAR_COMMAND)
+    os.system(nfcplaylistconsts.CLEAR_COMMAND)
     config_name = "ui_config"
 
     if len(sys.argv) >= 2:

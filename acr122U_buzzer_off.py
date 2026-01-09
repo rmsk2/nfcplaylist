@@ -2,7 +2,7 @@
 
 import os
 from smartcard.CardMonitoring import CardMonitor, CardObserver
-from nfcplaylistconsts import *
+import nfcplaylistconsts
 import uidfactory
 import acr122u
 
@@ -32,7 +32,7 @@ class CardIdObserver(CardObserver):
 
 if __name__ == "__main__":
     try:
-        os.system(CLEAR_COMMAND)
+        os.system(nfcplaylistconsts.CLEAR_COMMAND)
         u = uidfactory.UidReaderRepo()
         print(f"Put any card on the reader to switch buzzer off")
         cardmonitor = CardMonitor()

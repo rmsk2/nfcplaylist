@@ -3,7 +3,7 @@
 import os
 from smartcard.CardMonitoring import CardMonitor, CardObserver
 from smartcard.util import toHexString
-from nfcplaylistconsts import *
+import nfcplaylistconsts
 import uidfactory
 
 
@@ -17,7 +17,7 @@ class CardIdObserver(CardObserver):
         for card in addedcards:
             atr_txt = toHexString(card.atr)
 
-            if atr_txt not in ALL_ATRS:
+            if atr_txt not in nfcplaylistconsts.ALL_ATRS:
                 print(f"Card type unknown. ATR {atr_txt}")
                 continue
 
@@ -35,7 +35,7 @@ class CardIdObserver(CardObserver):
 
 if __name__ == "__main__":
     try:
-        os.system(CLEAR_COMMAND)
+        os.system(nfcplaylistconsts.CLEAR_COMMAND)
         u = uidfactory.UidReaderRepo()
         print(f"Put a card on the reader to get its id")
         cardmonitor = CardMonitor()

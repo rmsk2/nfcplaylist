@@ -10,7 +10,7 @@ import pygame
 import cardy
 import playlist
 import nfcplaylist_ui
-from nfcplaylistconsts import *
+import nfcplaylistconsts
 import uidfactory
 import acr122u
 
@@ -38,15 +38,14 @@ class NfcPlayer:
         self.event_err_gen = err_generic
         self.event_first_card = event_first_card
         self.ui = ui
-        self.activate_close_button = False
+        self.activate_close_button = ui.activate_close_button
         self._config_dir = ""
 
-        c = ui.ui_config["ids"]
-        self.card_id_rewind = c["rewind"]
-        self.card_id_restart = c["restart"]
-        self.card_id_end = c["end"]
-        self.card_id_skip = c["skip"]
-        self.card_id_prev = c["prev"]
+        self.card_id_rewind = ui.card_ids["rewind"]
+        self.card_id_restart = ui.card_ids["restart"]
+        self.card_id_end = ui.card_ids["end"]
+        self.card_id_skip = ui.card_ids["skip"]
+        self.card_id_prev = ui.card_ids["prev"]
         self.titles = {}
         self._first_handler = lambda x: None
 
@@ -75,7 +74,7 @@ class NfcPlayer:
         try:
             titles_raw = self.get_playlists(config_dir)
         except:
-            print(all_messages[ERR_MSG_LOAD_PLAYLIST])
+            print("Unable to load playlists")
             sys.exit(42)
 
         self.assign_playlists(titles_raw)
@@ -108,19 +107,19 @@ class NfcPlayer:
         self.reload_playlists()
 
         if event.card_id == self.card_id_rewind:
-            self.perform_function = NfcPlayer.prep_function_execution(lambda x: x.reset(), FUNC_PLAYLIST_RESTART)
-            pygame.event.post(pygame.event.Event(self.function_event, kind=FUNC_PLAYLIST_RESTART, ctx=None))            
+            self.perform_function = NfcPlayer.prep_function_execution(lambda x: x.reset(), nfcplaylistconsts.FUNC_PLAYLIST_RESTART)
+            pygame.event.post(pygame.event.Event(self.function_event, kind=nfcplaylistconsts.FUNC_PLAYLIST_RESTART, ctx=None))
         elif event.card_id == self.card_id_restart:
-            self.perform_function = NfcPlayer.prep_function_execution(lambda x: x.reset_play_time(), FUNC_SONG_RESTART)
-            pygame.event.post(pygame.event.Event(self.function_event, kind=FUNC_SONG_RESTART, ctx=None))
+            self.perform_function = NfcPlayer.prep_function_execution(lambda x: x.reset_play_time(), nfcplaylistconsts.FUNC_SONG_RESTART)
+            pygame.event.post(pygame.event.Event(self.function_event, kind=nfcplaylistconsts.FUNC_SONG_RESTART, ctx=None))
         elif event.card_id == self.card_id_skip:
-            self.perform_function = NfcPlayer.prep_function_execution(lambda x: x.skip_song(), FUNC_SONG_SKIP)
-            pygame.event.post(pygame.event.Event(self.function_event, kind=FUNC_SONG_SKIP, ctx=None))
+            self.perform_function = NfcPlayer.prep_function_execution(lambda x: x.skip_song(), nfcplaylistconsts.FUNC_SONG_SKIP)
+            pygame.event.post(pygame.event.Event(self.function_event, kind=nfcplaylistconsts.FUNC_SONG_SKIP, ctx=None))
         elif event.card_id == self.card_id_prev:
-            self.perform_function = NfcPlayer.prep_function_execution(lambda x: x.prev_song(), FUNC_SONG_PREV)
-            pygame.event.post(pygame.event.Event(self.function_event, kind=FUNC_SONG_PREV, ctx=None))
+            self.perform_function = NfcPlayer.prep_function_execution(lambda x: x.prev_song(), nfcplaylistconsts.FUNC_SONG_PREV)
+            pygame.event.post(pygame.event.Event(self.function_event, kind=nfcplaylistconsts.FUNC_SONG_PREV, ctx=None))
         elif event.card_id == self.card_id_end:
-            pygame.event.post(pygame.event.Event(self.function_event, kind=FUNC_END, ctx=None))
+            pygame.event.post(pygame.event.Event(self.function_event, kind=nfcplaylistconsts.FUNC_END, ctx=None))
         else:
             if not event.card_id in self.titles.keys():
                 return
@@ -132,7 +131,7 @@ class NfcPlayer:
             try:
                 if self.perform_function != None:
                     context = self.perform_function(self.titles[event.card_id])
-                    pygame.event.post(pygame.event.Event(self.function_event, kind=FUNC_PERFORMED, ctx=context))
+                    pygame.event.post(pygame.event.Event(self.function_event, kind=nfcplaylistconsts.FUNC_PERFORMED, ctx=context))
                     self.perform_function = None
 
                 if not pathlib.Path(pl.current_song()).exists():
@@ -147,7 +146,7 @@ class NfcPlayer:
                 self.state = STATE_PLAYING
                 pygame.event.post(pygame.event.Event(self.play_start_event, play_list_name=pl.play_list_name(), song=pl.get_current_song_num()+1, num_songs=pl.num_songs(), beep=event.beep))
             except Exception as e:
-                pygame.event.post(pygame.event.Event(self.event_err_gen, err_type=ERR_TYPE_FILE, err_msg=str(e)))
+                pygame.event.post(pygame.event.Event(self.event_err_gen, err_type=nfcplaylistconsts.ERR_TYPE_FILE, err_msg=str(e)))
                 pl.set_play_time(restore_play_time)
                 pl.set_current_song_num(restore_title)
 
@@ -254,30 +253,21 @@ def run_player(config_dir):
     pygame.mixer.music.set_endevent(event_music_end)
 
     ui = nfcplaylist_ui.NfcPlaylistUI(event_ui_stopped)
-    ui.load_config(config_dir)
     #ui.logger = printing_logger
-
-    if ("lang" in ui.ui_config) and (ui.ui_config["lang"] == "ger"):
-        set_lang_ger()
-
-    ui.eval_messages()
-    ui.set_std_message(all_messages[STD_MSG])
+    reader_wait_time = ui.init(config_dir)
 
     player = NfcPlayer(ui, event_insert, event_remove, event_music_end, event_function, event_playing, event_pause, event_list_end, event_ui_stopped, event_err_generic, event_first_card)
     player.load_playlists(config_dir)
     player.first_handler = lambda x: acr122u.buzzer_off(x) if (str(x).find("ACS ACR122U") != -1) else None
 
-    if ("activate_close_button" in ui.ui_config) and (ui.ui_config["activate_close_button"] == True):
-        player.activate_close_button = True
-
-    card_manager = cardy.CardManager(ALL_ATRS, uidfactory.UidReaderRepo(), event_insert, event_remove, event_err_generic, event_first_card)
+    card_manager = cardy.CardManager(nfcplaylistconsts.ALL_ATRS, uidfactory.UidReaderRepo(), event_insert, event_remove, event_err_generic, event_first_card)
     card_manager.start()
 
-    init_reader(ui.ui_config["wait_reader_sec"])
+    init_reader(reader_wait_time)
 
     try:
         # empty event queue, i.e. initial card errors
-        to_ignore = pygame.event.get()
+        _ = pygame.event.get()
         ui.start()
 
         while not player.end_program:
@@ -305,7 +295,7 @@ def maintenance_requested(config_dir):
 
 
 def main():
-    os.system(get_clear_command())
+    os.system(nfcplaylistconsts.get_clear_command())
 
     config_dir = "./"
     if len(sys.argv) > 1:
@@ -314,7 +304,7 @@ def main():
     run_player(config_dir)
 
     if not maintenance_requested(config_dir):
-        os.system(get_shutdown_command())
+        os.system(nfcplaylistconsts.get_shutdown_command())
 
 
 if __name__ == "__main__":

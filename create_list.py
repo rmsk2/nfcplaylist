@@ -1,7 +1,7 @@
 import sys
 import os
 import playlist
-from nfcplaylistconsts import *
+import nfcplaylistconsts
 import cli_tools
 import argparse
 import book_package
@@ -25,7 +25,7 @@ def make_playlist(playlist_dir, out_name, zip_file, event_insert):
 
 
 if __name__ == "__main__":
-    os.system(CLEAR_COMMAND)
+    os.system(nfcplaylistconsts.CLEAR_COMMAND)
 
     parser = argparse.ArgumentParser(description="Install new audio book")
     parser.add_argument("--zip-file", required=True, help="Path to the zip file containing audiobook data")

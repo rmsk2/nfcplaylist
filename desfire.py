@@ -1,6 +1,8 @@
-from nfcplaylistconsts import *
+import nfcplaylistconsts
+import uid_reader
 
-class DESFireUidReader(IUidReader):
+
+class DESFireUidReader(uid_reader.IUidReader):
     def __init__(self, watched_atr):
         self._atr = watched_atr
         # Taken and corrected from https://ridrix.wordpress.com/2009/09/19/mifare-desfire-communication-example/
@@ -16,9 +18,9 @@ class DESFireUidReader(IUidReader):
     def make_card_id(self, card):
         uid = self._read_des_fire_uid(card)
         if uid == None:
-            return NO_CARD_ID, False
+            return nfcplaylistconsts.NO_CARD_ID, False
 
-        new_id = IUidReader.determine_id(bytes(uid))
+        new_id = uid_reader.IUidReader.determine_id(bytes(uid))
 
         return new_id, True
 
