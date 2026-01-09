@@ -10,7 +10,7 @@ import pygame
 import cardy
 import playlist
 import nfcplaylist_ui
-import nfcplaylistconsts
+import consts
 import uidfactory
 import acr122u
 
@@ -107,19 +107,19 @@ class NfcPlayer:
         self.reload_playlists()
 
         if event.card_id == self.card_id_rewind:
-            self.perform_function = NfcPlayer.prep_function_execution(lambda x: x.reset(), nfcplaylistconsts.FUNC_PLAYLIST_RESTART)
-            pygame.event.post(pygame.event.Event(self.function_event, kind=nfcplaylistconsts.FUNC_PLAYLIST_RESTART, ctx=None))
+            self.perform_function = NfcPlayer.prep_function_execution(lambda x: x.reset(), consts.FUNC_PLAYLIST_RESTART)
+            pygame.event.post(pygame.event.Event(self.function_event, kind=consts.FUNC_PLAYLIST_RESTART, ctx=None))
         elif event.card_id == self.card_id_restart:
-            self.perform_function = NfcPlayer.prep_function_execution(lambda x: x.reset_play_time(), nfcplaylistconsts.FUNC_SONG_RESTART)
-            pygame.event.post(pygame.event.Event(self.function_event, kind=nfcplaylistconsts.FUNC_SONG_RESTART, ctx=None))
+            self.perform_function = NfcPlayer.prep_function_execution(lambda x: x.reset_play_time(), consts.FUNC_SONG_RESTART)
+            pygame.event.post(pygame.event.Event(self.function_event, kind=consts.FUNC_SONG_RESTART, ctx=None))
         elif event.card_id == self.card_id_skip:
-            self.perform_function = NfcPlayer.prep_function_execution(lambda x: x.skip_song(), nfcplaylistconsts.FUNC_SONG_SKIP)
-            pygame.event.post(pygame.event.Event(self.function_event, kind=nfcplaylistconsts.FUNC_SONG_SKIP, ctx=None))
+            self.perform_function = NfcPlayer.prep_function_execution(lambda x: x.skip_song(), consts.FUNC_SONG_SKIP)
+            pygame.event.post(pygame.event.Event(self.function_event, kind=consts.FUNC_SONG_SKIP, ctx=None))
         elif event.card_id == self.card_id_prev:
-            self.perform_function = NfcPlayer.prep_function_execution(lambda x: x.prev_song(), nfcplaylistconsts.FUNC_SONG_PREV)
-            pygame.event.post(pygame.event.Event(self.function_event, kind=nfcplaylistconsts.FUNC_SONG_PREV, ctx=None))
+            self.perform_function = NfcPlayer.prep_function_execution(lambda x: x.prev_song(), consts.FUNC_SONG_PREV)
+            pygame.event.post(pygame.event.Event(self.function_event, kind=consts.FUNC_SONG_PREV, ctx=None))
         elif event.card_id == self.card_id_end:
-            pygame.event.post(pygame.event.Event(self.function_event, kind=nfcplaylistconsts.FUNC_END, ctx=None))
+            pygame.event.post(pygame.event.Event(self.function_event, kind=consts.FUNC_END, ctx=None))
         else:
             if not event.card_id in self.titles.keys():
                 return
@@ -131,7 +131,7 @@ class NfcPlayer:
             try:
                 if self.perform_function != None:
                     context = self.perform_function(self.titles[event.card_id])
-                    pygame.event.post(pygame.event.Event(self.function_event, kind=nfcplaylistconsts.FUNC_PERFORMED, ctx=context))
+                    pygame.event.post(pygame.event.Event(self.function_event, kind=consts.FUNC_PERFORMED, ctx=context))
                     self.perform_function = None
 
                 if not pathlib.Path(pl.current_song()).exists():
@@ -146,7 +146,7 @@ class NfcPlayer:
                 self.state = STATE_PLAYING
                 pygame.event.post(pygame.event.Event(self.play_start_event, play_list_name=pl.play_list_name(), song=pl.get_current_song_num()+1, num_songs=pl.num_songs(), beep=event.beep))
             except Exception as e:
-                pygame.event.post(pygame.event.Event(self.event_err_gen, err_type=nfcplaylistconsts.ERR_TYPE_FILE, err_msg=str(e)))
+                pygame.event.post(pygame.event.Event(self.event_err_gen, err_type=consts.ERR_TYPE_FILE, err_msg=str(e)))
                 pl.set_play_time(restore_play_time)
                 pl.set_current_song_num(restore_title)
 
@@ -260,7 +260,7 @@ def run_player(config_dir):
     player.load_playlists(config_dir)
     player.first_handler = lambda x: acr122u.buzzer_off(x) if (str(x).find("ACS ACR122U") != -1) else None
 
-    card_manager = cardy.CardManager(nfcplaylistconsts.ALL_ATRS, uidfactory.UidReaderRepo(), event_insert, event_remove, event_err_generic, event_first_card)
+    card_manager = cardy.CardManager(consts.ALL_ATRS, uidfactory.UidReaderRepo(), event_insert, event_remove, event_err_generic, event_first_card)
     card_manager.start()
 
     init_reader(reader_wait_time)
@@ -295,7 +295,7 @@ def maintenance_requested(config_dir):
 
 
 def main():
-    os.system(nfcplaylistconsts.get_clear_command())
+    os.system(consts.get_clear_command())
 
     config_dir = "./"
     if len(sys.argv) > 1:
@@ -304,7 +304,7 @@ def main():
     run_player(config_dir)
 
     if not maintenance_requested(config_dir):
-        os.system(nfcplaylistconsts.get_shutdown_command())
+        os.system(consts.get_shutdown_command())
 
 
 if __name__ == "__main__":

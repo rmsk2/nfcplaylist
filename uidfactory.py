@@ -1,6 +1,6 @@
 from smartcard.util import toHexString
 from typing import Any
-import nfcplaylistconsts
+import consts
 import uid_reader
 import desfire
 import ntag21x
@@ -28,7 +28,7 @@ class UidReaderRepo:
 
         # automatically create a dummy uid reader for all cards which are
         # not explicitly named
-        all = set(nfcplaylistconsts.ALL_ATRS)
+        all = set(consts.ALL_ATRS)
         named = set(self._atr_map.keys())
         not_named = all - named        
 
@@ -37,18 +37,18 @@ class UidReaderRepo:
             self._atr_map[i] = DummyReader(f"Type {card_type}", i)
 
     def add_named_cards(self):
-        self._atr_map[nfcplaylistconsts.ATR_DES_FIRE] = desfire.DESFireUidReader(nfcplaylistconsts.ATR_DES_FIRE)
-        self._atr_map[nfcplaylistconsts.ATR_NTAG] = ntag21x.Ntag215UidReader(nfcplaylistconsts.ATR_NTAG)
-        self._atr_map[nfcplaylistconsts.ATR_MIFARE_CLASSIC] = ntag21x.Ntag215UidReader(nfcplaylistconsts.ATR_MIFARE_CLASSIC, "Mifare Classic")
-        self._atr_map[nfcplaylistconsts.ATR_MIFARE_ULTRALIGHT] = ntag21x.Ntag215UidReader(nfcplaylistconsts.ATR_MIFARE_ULTRALIGHT, "Mifare Ultralight")
-        self._atr_map[nfcplaylistconsts.ATR_E_PERSO] = DummyReader("German national ID", nfcplaylistconsts.ATR_E_PERSO)
-        self._atr_map[nfcplaylistconsts.ATR_GIRO] = DummyReader("German Giro", nfcplaylistconsts.ATR_GIRO)
-        self._atr_map[nfcplaylistconsts.ATR_EGK] = DummyReader("German electronic health", nfcplaylistconsts.ATR_EGK)
+        self._atr_map[consts.ATR_DES_FIRE] = desfire.DESFireUidReader(consts.ATR_DES_FIRE)
+        self._atr_map[consts.ATR_NTAG] = ntag21x.Ntag215UidReader(consts.ATR_NTAG)
+        self._atr_map[consts.ATR_MIFARE_CLASSIC] = ntag21x.Ntag215UidReader(consts.ATR_MIFARE_CLASSIC, "Mifare Classic")
+        self._atr_map[consts.ATR_MIFARE_ULTRALIGHT] = ntag21x.Ntag215UidReader(consts.ATR_MIFARE_ULTRALIGHT, "Mifare Ultralight")
+        self._atr_map[consts.ATR_E_PERSO] = DummyReader("German national ID", consts.ATR_E_PERSO)
+        self._atr_map[consts.ATR_GIRO] = DummyReader("German Giro", consts.ATR_GIRO)
+        self._atr_map[consts.ATR_EGK] = DummyReader("German electronic health", consts.ATR_EGK)
 
     @staticmethod
     def get_default_id(atr):
         index = 0
-        for i in nfcplaylistconsts.ALL_ATRS:
+        for i in consts.ALL_ATRS:
             if i == atr:
                 return index
             else:

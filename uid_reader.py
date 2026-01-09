@@ -1,16 +1,16 @@
 import hashlib
 from typing import Any
-import nfcplaylistconsts
+import consts
 
 # A UiReader knows how to calculate an individual identity for
 # the cards of a specifc type using their serial number
 class IUidReader:
     def make_card_id(self, card: Any) -> tuple[int, bool]:
         # id, ok
-        return nfcplaylistconsts.NO_CARD_ID, False
+        return consts.NO_CARD_ID, False
 
     def get_atr(self) -> str:
-        return nfcplaylistconsts.NO_ATR
+        return consts.NO_ATR
 
     def get_name(self) -> str:
         return ""

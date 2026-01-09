@@ -76,7 +76,7 @@ totally overblown and you are right. But that is what seemed to work with my rea
 ## Using simpler NFC tags
 
 In a second step and after purchasing an additional reader (an ACS ACR122U) I also implemented reading serial numbers from ISO 14443 Type A
-NFC tags like for instance various types of Mifare cards. Take a look at `uidfactory.py`, `nfcplaylistconsts.IUidReader`, `DESFireUidReader`
+NFC tags like for instance various types of Mifare cards. Take a look at `uidfactory.py`, `uid_reader.IUidReader`, `DESFireUidReader`
 and `Ntag215UidReader` in order to get an idea of how to add more card types. I then discovered that the DESFire cards can also be 
 treated as simple ISO 14443 Type A tags, but I left the DESFire specific code in place.
 
@@ -115,7 +115,7 @@ of the background in blue.
 
 ## Config of program
 
-The overall config of this software is split between two files: `ui_config` and `nfcplaylistconsts.py`. In the JSON file `ui_config`
+The overall config of this software is split between two files: `ui_config` and `consts.py`. In the JSON file `ui_config`
 under `sounds` you can  configure the sounds which are played when for instance an error occurs or a card is successfully read
 by referencing a corresponding file. Any file format supported by [`pygame`](https://www.pygame.org/docs/ref/mixer.html#pygame.mixer.Sound) 
 can be used here. According to the documentation currently OGG and WAV are supported for this purpose. Please note that this limitation 
@@ -123,12 +123,12 @@ does not apply to the music files on the playlist. These can be [MP3 or OGG](htt
 
 In the `ids` "section" you can configure which cards are used as `function cards` as specified by their id. As written above the
 card ids of DESFire and other cards known to this software can de determined using `id_gen.py`. The ids of cards which are identified 
-by their ATR only is determined by their position in the list `ALL_ATRS` contained in the module `nfcplaylistconsts.py`. You can
+by their ATR only is determined by their position in the list `ALL_ATRS` contained in the module `consts.py`. You can
 automate the assignment of function cards by using the tool `func_cards.py`.
 
 The "section" `size` specifies the size of the UI in pixels as well as the font sizes used for displaying text. Finally the "key" 
 `wait_reader_sec` determines how long the software waits for the reader to become ready. The messages displayed on the UI can
-be customized in the file `nfcplaylistconsts.py` as can be the command which is used to clear the console after program start. Please
+be customized in the file `consts.py` as can be the command which is used to clear the console after program start. Please
 change the constant `CLEAR_COMMAND` to `cls` under Windows.
 
 Via the entry `activate_close_button` (allowed values are `true` and `false`) you can control whether the program can be stopped
@@ -140,7 +140,7 @@ messages in english.
 If the key `shutdown_command` is present its value will be used as a command to execute when `nfcplaylist` is stopped
 (see [below](#other-considerations) for the reasons why this is desireable and useful).
 
-If a key `msgs` is present its subvalues will be used to override the messages defined in `nfcplaylistconsts.py`. This can be used to
+If a key `msgs` is present its subvalues will be used to override the messages defined in `consts.py`. This can be used to
 change some or even all of the messages which are presented to the user. Here an example of these two keys in action.
 
 ```
@@ -226,7 +226,7 @@ interacting with the operating system.
 
 I solved the last problem by allowing to run a command after nfcplaylist was stopped, for instance by placing the corresponding function card on
 the reader or by clicking the close button of the main window. This command can be set by changing the value of `SHUTDOWN_COMMAND` in the module
-`nfcplaylistconsts.py`. I use the software on macOS and I tweaked the system in such a way that the logged on user can utilize `sudo` without
+`consts.py`. I use the software on macOS and I tweaked the system in such a way that the logged on user can utilize `sudo` without
 entering a password. After that setting `SHUTDOWN_COMMAND` to `sudo shutdown -h now` did the trick. You can prevent the shutdown command from
 being executed by creating a file called `maintenance` in the same directory where `ui_config` resides. When nfcplaylist detects the presence of this
 file it not only skips the execution of the shutdown command but also deletes the file. This makes sure that deleting the `maintenance` file after

@@ -3,7 +3,7 @@ import sys
 import json
 import pygame
 import nfcplaylist
-import nfcplaylistconsts
+import consts
 
 
 VERSION_STRING = "1.1.0"
@@ -69,8 +69,8 @@ class NfcPlaylistUI:
         self._activate_close_button = False
 
         self._err_map = {
-            nfcplaylistconsts.ERR_TYPE_COMM: self.red,
-            nfcplaylistconsts.ERR_TYPE_FILE: self.blue
+            consts.ERR_TYPE_COMM: self.red,
+            consts.ERR_TYPE_FILE: self.blue
         }
 
     def load_config(self, config_dir):
@@ -80,7 +80,7 @@ class NfcPlaylistUI:
 
             if "shutdown_command" in all_data.keys():
                 cmd = all_data["shutdown_command"]
-                nfcplaylistconsts.set_shutdown_command(cmd)
+                consts.set_shutdown_command(cmd)
         except:
             print(all_messages[ERR_MSG_LOAD_CONFIG])
             sys.exit(42)
@@ -207,18 +207,18 @@ class NfcPlaylistUI:
 
     def handle_function_event(self, event):
         self.sound_bell()
-        if event.kind == nfcplaylistconsts.FUNC_END:
+        if event.kind == consts.FUNC_END:
             self._text = all_messages[MSG_SHUTDOWN]
             self.redraw()
             pygame.time.wait(200)
             pygame.event.post(pygame.event.Event(self.stopped_event))
-        elif event.kind == nfcplaylistconsts.FUNC_PLAYLIST_RESTART:
+        elif event.kind == consts.FUNC_PLAYLIST_RESTART:
             self._func_text = all_messages[MSG_PLAYLIST_BEGINING]
-        elif event.kind == nfcplaylistconsts.FUNC_SONG_RESTART:
+        elif event.kind == consts.FUNC_SONG_RESTART:
             self._func_text =  all_messages[MSG_RESTART_SONG]
-        elif event.kind == nfcplaylistconsts.FUNC_SONG_SKIP:
+        elif event.kind == consts.FUNC_SONG_SKIP:
             self._func_text =  all_messages[MSG_SKIP_SONG]
-        elif event.kind == nfcplaylistconsts.FUNC_SONG_PREV:
+        elif event.kind == consts.FUNC_SONG_PREV:
             self._func_text = all_messages[MSG_NEXT_SONG]
-        elif event.kind == nfcplaylistconsts.FUNC_PERFORMED:
+        elif event.kind == consts.FUNC_PERFORMED:
             self._func_text = EMPTY_STR

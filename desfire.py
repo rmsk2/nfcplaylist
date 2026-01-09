@@ -1,4 +1,4 @@
-import nfcplaylistconsts
+import consts
 import uid_reader
 
 
@@ -18,7 +18,7 @@ class DESFireUidReader(uid_reader.IUidReader):
     def make_card_id(self, card):
         uid = self._read_des_fire_uid(card)
         if uid == None:
-            return nfcplaylistconsts.NO_CARD_ID, False
+            return consts.NO_CARD_ID, False
 
         new_id = uid_reader.IUidReader.determine_id(bytes(uid))
 

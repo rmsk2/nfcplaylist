@@ -1,5 +1,5 @@
 from smartcard.util import toHexString
-import nfcplaylistconsts
+import consts
 import uid_reader
 
 
@@ -19,7 +19,7 @@ class Ntag215UidReader(uid_reader.IUidReader):
     def make_card_id(self, card):
         uid = self._read_ntag_uid(card)
         if uid == None:
-            return nfcplaylistconsts.NO_CARD_ID, False
+            return consts.NO_CARD_ID, False
 
         new_id = uid_reader.IUidReader.determine_id(bytes(uid))
 
