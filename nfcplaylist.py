@@ -40,6 +40,7 @@ class NfcPlayer:
         self.ui = ui
         self.activate_close_button = ui.activate_close_button
         self._config_dir = ""
+        self._mix_man = MixerManager(False)
 
         self.card_id_rewind = ui.card_ids["rewind"]
         self.card_id_restart = ui.card_ids["restart"]
@@ -137,7 +138,7 @@ class NfcPlayer:
                 if not pathlib.Path(pl.current_song()).exists():
                     raise Exception("File does not exist")
 
-                _ = mixer_init()
+                self._mix_man.init()
                 mixer.music.load(pl.current_song())
                 start_pos = pl.get_play_time()
 
@@ -161,7 +162,7 @@ class NfcPlayer:
         self.playing_id = NO_SONG
         self.state = STATE_IDLE
         mixer.music.stop()
-        mixer_stop()
+        self._mix_man.stop(None)
         pygame.event.post(pygame.event.Event(self.event_pause))
 
     def handle_song_end(self):
@@ -173,7 +174,7 @@ class NfcPlayer:
             self.titles[self.playing_id].reset()
             self.playing_id = NO_SONG
             self.state = STATE_IDLE
-            mixer_stop()
+            self._mix_man.stop(None)
             pygame.event.post(pygame.event.Event(self.event_list_end))
             return
         
@@ -209,17 +210,37 @@ class NfcPlayer:
                 self._end_program = True
 
 
-def mixer_init():
-    if pygame.mixer.get_init() == None:
-        mixer.init()
-        return True
-    else:
-        return False
+class MixerManager:
+    def __init__(self, do_init = True):
+        self._was_initialized_by_me = None
 
+        if do_init:
+            self._force_init()
 
-def mixer_stop():
-    if pygame.mixer.get_init() != None:
-        mixer.quit()
+    def init(self):
+        if self._was_initialized_by_me != True:
+            self._force_init()
+
+    def _force_init(self):
+        if pygame.mixer.get_init() == None:
+            mixer.init()
+            self._was_initialized_by_me = True
+            #print("init")
+        else:
+            self._was_initialized_by_me = False
+
+    @staticmethod
+    def stop_if_initialized():
+        if pygame.mixer.get_init() != None:
+            mixer.quit()
+            #print("deinit")
+
+    def stop(self, end_func):
+        if self._was_initialized_by_me == True:
+            if end_func != None:
+                end_func()
+            MixerManager.stop_if_initialized()
+            self._was_initialized_by_me = False
 
 
 def init_reader(wait_time):
@@ -239,6 +260,8 @@ def run_player(config_dir):
     # Last parameter is buffer size. Maybe increase it further if sound starts to lag
     mixer.pre_init(44100, -16, 2, 2048)
     pygame.init()
+
+    MixerManager.stop_if_initialized()
 
     event_insert = pygame.event.custom_type()
     event_remove = pygame.event.custom_type()

@@ -210,16 +210,10 @@ class NfcPlaylistUI:
         text_rect.center = (self._x_size // 2, self._y_size // 4)
         self._display_surface.blit(text, text_rect)
 
-
     def _err_logger(self, msg):
         self._sound_bell()
 
     def _sound_bell(self):
-        init_was_performed = nfcplaylist.mixer_init()
-
-        sound = pygame.mixer.Sound(self._sound_error)
-        sound.play()
-
-        if init_was_performed:
-            pygame.time.wait(200)
-            nfcplaylist.mixer_stop()
+        mix_man = nfcplaylist.MixerManager()
+        pygame.mixer.Sound(self._sound_error).play()
+        mix_man.stop(lambda: pygame.time.wait(200))
