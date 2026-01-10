@@ -65,7 +65,7 @@ class NfcPlaylistUI:
         self._background_col = self.white
         self._font_size = 48
         self._func_font_size = 32
-        self._logger = self.err_logger
+        self._logger = self._err_logger
         self._activate_close_button = False
 
         self._err_map = {
@@ -73,7 +73,94 @@ class NfcPlaylistUI:
             consts.ERR_TYPE_FILE: self.blue
         }
 
-    def load_config(self, config_dir):
+    @property
+    def card_ids(self):
+        return self._ui_config["ids"]
+
+    @property
+    def activate_close_button(self):
+        return self._activate_close_button
+
+    @property
+    def logger(self):
+        return self._logger
+    
+    @logger.setter
+    def logger(self, val):
+        self._logger = val
+
+    def init(self, config_dir):
+        self._load_config(config_dir)
+
+        if ("lang" in self._ui_config) and (self._ui_config["lang"] == "ger"):
+            set_lang_ger()
+
+        self._eval_messages()
+        self._set_std_message(all_messages[STD_MSG])
+
+        self._activate_close_button = False
+        if ("activate_close_button" in self._ui_config) and (self._ui_config["activate_close_button"] == True):
+            self._activate_close_button = True
+
+        return self._ui_config["wait_reader_sec"]
+
+    def force_redraw(self):
+        self._redraw()
+        pygame.display.update()
+
+    def start(self):
+        self._display_surface = pygame.display.set_mode((self._x_size, self._y_size))
+        self._set_caption_txt(all_messages[CAPTION_DEFAULT])
+        self._font = pygame.font.Font('freesansbold.ttf', self._font_size)
+        self._func_font = pygame.font.Font('freesansbold.ttf', self._func_font_size)
+
+    def handle_error(self, err_type, err_msg):
+        self._logger(err_msg)
+        h = self._text
+        b = self._background_col
+
+        self._background_col = self._err_map[err_type]
+        self.force_redraw()
+        pygame.time.wait(175)
+
+        self._text = h
+        self._background_col = b
+        self._redraw()        
+
+    def handle_play_start(self, event):
+        if event.beep:
+            self._sound_bell()
+
+        self._text = all_messages[MSG_PLAY_FORMAT_STR].format(song=event.song, num_songs=event.num_songs)
+        self._set_caption_txt(event.play_list_name)
+
+    def handle_pause(self):
+        self._set_caption_txt(all_messages[CAPTION_DEFAULT])
+        self._text = all_messages[STD_MSG]
+
+    def handle_list_end(self):
+        self._set_caption_txt(all_messages[CAPTION_DEFAULT])
+        self._text = all_messages[STD_MSG]
+
+    def handle_function_event(self, event):
+        self._sound_bell()
+        if event.kind == consts.FUNC_END:
+            self._text = all_messages[MSG_SHUTDOWN]
+            self._redraw()
+            pygame.time.wait(200)
+            pygame.event.post(pygame.event.Event(self.stopped_event))
+        elif event.kind == consts.FUNC_PLAYLIST_RESTART:
+            self._func_text = all_messages[MSG_PLAYLIST_BEGINING]
+        elif event.kind == consts.FUNC_SONG_RESTART:
+            self._func_text =  all_messages[MSG_RESTART_SONG]
+        elif event.kind == consts.FUNC_SONG_SKIP:
+            self._func_text =  all_messages[MSG_SKIP_SONG]
+        elif event.kind == consts.FUNC_SONG_PREV:
+            self._func_text = all_messages[MSG_NEXT_SONG]
+        elif event.kind == consts.FUNC_PERFORMED:
+            self._func_text = EMPTY_STR
+
+    def _load_config(self, config_dir):
         try:
             with(open(os.path.join(config_dir, "ui_config"), "r") as f):
                 all_data = json.load(f)
@@ -98,51 +185,20 @@ class NfcPlaylistUI:
 
         self._ui_config = all_data
 
-    def init(self, config_dir):
-        self.load_config(config_dir)
-
-        if ("lang" in self._ui_config) and (self._ui_config["lang"] == "ger"):
-            set_lang_ger()
-
-        self.eval_messages()
-        self.set_std_message(all_messages[STD_MSG])
-
-        self._activate_close_button = False
-        if ("activate_close_button" in self._ui_config) and (self._ui_config["activate_close_button"] == True):
-            self._activate_close_button = True
-
-        return self._ui_config["wait_reader_sec"]
-
-    @property
-    def card_ids(self):
-        return self._ui_config["ids"]
-
-    @property
-    def activate_close_button(self):
-        return self._activate_close_button
-
-    @property
-    def logger(self):
-        return self._logger
-    
-    @logger.setter
-    def logger(self, val):
-        self._logger = val
-
-    def eval_messages(self):
+    def _eval_messages(self):
         config = self._ui_config
 
         if "msgs" in config.keys():
             for i in config["msgs"].keys():
                 set_message(i, config["msgs"][i])
 
-    def set_std_message(self, msg):
+    def _set_std_message(self, msg):
         self._text = msg
 
-    def set_caption_txt(self, txt):
+    def _set_caption_txt(self, txt):
         pygame.display.set_caption(f"{txt} - Version {VERSION_STRING}")
 
-    def redraw(self):
+    def _redraw(self):
         text = self._font.render(self._text, True, self.black, self._background_col)
         text_rect = text.get_rect()
         text_rect.center = (self._x_size // 2, self._y_size // 2)
@@ -154,20 +210,11 @@ class NfcPlaylistUI:
         text_rect.center = (self._x_size // 2, self._y_size // 4)
         self._display_surface.blit(text, text_rect)
 
-    def force_redraw(self):
-        self.redraw()
-        pygame.display.update()
 
-    def start(self):
-        self._display_surface = pygame.display.set_mode((self._x_size, self._y_size))
-        self.set_caption_txt(all_messages[CAPTION_DEFAULT])
-        self._font = pygame.font.Font('freesansbold.ttf', self._font_size)
-        self._func_font = pygame.font.Font('freesansbold.ttf', self._func_font_size)
+    def _err_logger(self, msg):
+        self._sound_bell()
 
-    def err_logger(self, msg):
-        self.sound_bell()
-
-    def sound_bell(self):
+    def _sound_bell(self):
         init_was_performed = nfcplaylist.mixer_init()
 
         sound = pygame.mixer.Sound(self._sound_error)
@@ -176,49 +223,3 @@ class NfcPlaylistUI:
         if init_was_performed:
             pygame.time.wait(200)
             nfcplaylist.mixer_stop()
-
-    def handle_error(self, err_type, err_msg):
-        self._logger(err_msg)
-        h = self._text
-        b = self._background_col
-
-        self._background_col = self._err_map[err_type]
-        self.force_redraw()
-        pygame.time.wait(175)
-
-        self._text = h
-        self._background_col = b
-        self.redraw()        
-
-    def handle_play_start(self, event):
-        if event.beep:
-            self.sound_bell()
-
-        self._text = all_messages[MSG_PLAY_FORMAT_STR].format(song=event.song, num_songs=event.num_songs)
-        self.set_caption_txt(event.play_list_name)
-
-    def handle_pause(self):
-        self.set_caption_txt(all_messages[CAPTION_DEFAULT])
-        self._text = all_messages[STD_MSG]
-
-    def handle_list_end(self):
-        self.set_caption_txt(all_messages[CAPTION_DEFAULT])
-        self._text = all_messages[STD_MSG]
-
-    def handle_function_event(self, event):
-        self.sound_bell()
-        if event.kind == consts.FUNC_END:
-            self._text = all_messages[MSG_SHUTDOWN]
-            self.redraw()
-            pygame.time.wait(200)
-            pygame.event.post(pygame.event.Event(self.stopped_event))
-        elif event.kind == consts.FUNC_PLAYLIST_RESTART:
-            self._func_text = all_messages[MSG_PLAYLIST_BEGINING]
-        elif event.kind == consts.FUNC_SONG_RESTART:
-            self._func_text =  all_messages[MSG_RESTART_SONG]
-        elif event.kind == consts.FUNC_SONG_SKIP:
-            self._func_text =  all_messages[MSG_SKIP_SONG]
-        elif event.kind == consts.FUNC_SONG_PREV:
-            self._func_text = all_messages[MSG_NEXT_SONG]
-        elif event.kind == consts.FUNC_PERFORMED:
-            self._func_text = EMPTY_STR
