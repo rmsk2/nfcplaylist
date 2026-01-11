@@ -10,13 +10,14 @@ import pygame
 import cardy
 import playlist
 import nfcplaylist_ui
-#import nfcplaylist_cli
+import nfcplaylist_cli
 import consts
 import uidfactory
 import acr122u
 import mixman
 
 MAINTENANCE_INDICATOR = "maintenance"
+ENV_CLI = "NFCPLAY_UI"
 
 STATE_IDLE = 0
 STATE_PLAYING = 1
@@ -225,6 +226,18 @@ def printing_logger(msg):
     print(msg)
 
 
+def create_ui_obj(event_ui_stopped):
+    res = None
+    try:
+        ui_type = os.environ[ENV_CLI]
+        if ui_type == "CLI":
+            res = nfcplaylist_cli.NfcPlaylistUI(event_ui_stopped)
+    except:
+        res = nfcplaylist_ui.NfcPlaylistUI(event_ui_stopped)
+
+    return res
+
+
 def run_player(config_dir):
     # Last parameter is buffer size. Maybe increase it further if sound starts to lag
     mixer.pre_init(44100, -16, 2, 2048)
@@ -244,8 +257,7 @@ def run_player(config_dir):
     event_first_card = pygame.event.custom_type()
     pygame.mixer.music.set_endevent(event_music_end)
 
-    ui = nfcplaylist_ui.NfcPlaylistUI(event_ui_stopped)
-    #ui = nfcplaylist_cli.NfcPlaylistUI(event_ui_stopped)
+    ui = create_ui_obj(event_ui_stopped)
     #ui.logger = printing_logger
     reader_wait_time = ui.init(config_dir)
 
