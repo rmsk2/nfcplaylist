@@ -37,7 +37,7 @@ class UiBase:
     # Override this method. Return a bool. If consts.FUNC_END is handled this bool
     # determines if the program stops (True) or not (False)
     def handle_all_func_events(event):
-        pass
+        return True
 
     def _signal_ui_stopped(self):
         pygame.event.post(pygame.event.Event(self.stopped_event))
