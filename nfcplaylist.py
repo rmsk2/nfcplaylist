@@ -10,6 +10,7 @@ import pygame
 import cardy
 import playlist
 import nfcplaylist_ui
+#import nfcplaylist_cli
 import consts
 import uidfactory
 import acr122u
@@ -276,6 +277,7 @@ def run_player(config_dir):
     pygame.mixer.music.set_endevent(event_music_end)
 
     ui = nfcplaylist_ui.NfcPlaylistUI(event_ui_stopped)
+    #ui = nfcplaylist_cli.NfcPlaylistUI(event_ui_stopped)
     #ui.logger = printing_logger
     reader_wait_time = ui.init(config_dir)
 
@@ -297,6 +299,10 @@ def run_player(config_dir):
             player.work_event_queue()
             ui.force_redraw()
     except KeyboardInterrupt:
+        pass
+    except:
+        # If any exception occurs shutdown machine and let the user restart
+        # it
         pass
     finally:
         card_manager.destroy()
