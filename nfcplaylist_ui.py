@@ -1,12 +1,9 @@
-import os
-import sys
-import json
 import pygame
-import nfcplaylist
 import consts
+import configurator
 
 
-VERSION_STRING = "1.1.1"
+VERSION_STRING = "1.2.0"
 
 # This should be as long as the longest string to be displayed
 EMPTY_STR = '                                  '
@@ -51,9 +48,9 @@ def set_message(key, value):
     all_messages[key] = value
 
 
-class NfcPlaylistUI:
+class NfcPlaylistUI(configurator.UiBase):
     def __init__(self, event_ui_stopped):
-        self.stopped_event = event_ui_stopped
+        super().__init__(event_ui_stopped)
         self.white = (255, 255, 255)
         self.black = (0, 0, 0)
         self.red = (255, 0, 0)
@@ -65,42 +62,26 @@ class NfcPlaylistUI:
         self._background_col = self.white
         self._font_size = 48
         self._func_font_size = 32
-        self._logger = self._err_logger
-        self._activate_close_button = False
 
         self._err_map = {
             consts.ERR_TYPE_COMM: self.red,
             consts.ERR_TYPE_FILE: self.blue
         }
 
-    @property
-    def card_ids(self):
-        return self._ui_config["ids"]
-
-    @property
-    def activate_close_button(self):
-        return self._activate_close_button
-
-    @property
-    def logger(self):
-        return self._logger
-    
-    @logger.setter
-    def logger(self, val):
-        self._logger = val
-
     def init(self, config_dir):
         self._load_config(config_dir)
 
+        data = self._ui_config["size"]
+        self._x_size = data["x_size"]
+        self._y_size = data["y_size"]
+        self._font_size = data["font_size1"]
+        self._func_font_size = data["font_size2"]
+
         if ("lang" in self._ui_config) and (self._ui_config["lang"] == "ger"):
-            set_lang_ger()
+            set_lang_ger()        
 
         self._eval_messages()
         self._set_std_message(all_messages[STD_MSG])
-
-        self._activate_close_button = False
-        if ("activate_close_button" in self._ui_config) and (self._ui_config["activate_close_button"] == True):
-            self._activate_close_button = True
 
         return self._ui_config["wait_reader_sec"]
 
@@ -142,13 +123,11 @@ class NfcPlaylistUI:
         self._set_caption_txt(all_messages[CAPTION_DEFAULT])
         self._text = all_messages[STD_MSG]
 
-    def handle_function_event(self, event):
-        self._sound_bell()
+    def handle_all_func_events(self, event):
         if event.kind == consts.FUNC_END:
             self._text = all_messages[MSG_SHUTDOWN]
-            self._redraw()
-            pygame.time.wait(200)
-            pygame.event.post(pygame.event.Event(self.stopped_event))
+            self.force_redraw()
+            pygame.time.wait(500)
         elif event.kind == consts.FUNC_PLAYLIST_RESTART:
             self._func_text = all_messages[MSG_PLAYLIST_BEGINING]
         elif event.kind == consts.FUNC_SONG_RESTART:
@@ -159,31 +138,8 @@ class NfcPlaylistUI:
             self._func_text = all_messages[MSG_NEXT_SONG]
         elif event.kind == consts.FUNC_PERFORMED:
             self._func_text = EMPTY_STR
-
-    def _load_config(self, config_dir):
-        try:
-            with(open(os.path.join(config_dir, "ui_config"), "r") as f):
-                all_data = json.load(f)
-
-            if "shutdown_command" in all_data.keys():
-                cmd = all_data["shutdown_command"]
-                consts.set_shutdown_command(cmd)
-        except:
-            print(all_messages[ERR_MSG_LOAD_CONFIG])
-            sys.exit(42)
         
-        data = all_data["sounds"]
-        self._sound_info = data["info_sound"]
-        self._sound_warning = data["warning_sound"]
-        self._sound_error = data["error_sound"]
-
-        data = all_data["size"]
-        self._x_size = data["x_size"]
-        self._y_size = data["y_size"]
-        self._font_size = data["font_size1"]
-        self._func_font_size = data["font_size2"]
-
-        self._ui_config = all_data
+        return True
 
     def _eval_messages(self):
         config = self._ui_config
@@ -209,11 +165,3 @@ class NfcPlaylistUI:
         text_rect = text.get_rect()
         text_rect.center = (self._x_size // 2, self._y_size // 4)
         self._display_surface.blit(text, text_rect)
-
-    def _err_logger(self, msg):
-        self._sound_bell()
-
-    def _sound_bell(self):
-        mix_man = nfcplaylist.MixerManager()
-        pygame.mixer.Sound(self._sound_error).play()
-        mix_man.stop(lambda: pygame.time.wait(200))

@@ -14,6 +14,7 @@ import nfcplaylist_ui
 import consts
 import uidfactory
 import acr122u
+import mixman
 
 MAINTENANCE_INDICATOR = "maintenance"
 
@@ -41,7 +42,7 @@ class NfcPlayer:
         self.ui = ui
         self.activate_close_button = ui.activate_close_button
         self._config_dir = ""
-        self._mix_man = MixerManager(False)
+        self._mix_man = mixman.MixerManager(False)
 
         self.card_id_rewind = ui.card_ids["rewind"]
         self.card_id_restart = ui.card_ids["restart"]
@@ -211,39 +212,6 @@ class NfcPlayer:
                 self._end_program = True
 
 
-class MixerManager:
-    def __init__(self, do_init = True):
-        self._was_initialized_by_me = None
-
-        if do_init:
-            self._force_init()
-
-    def init(self):
-        if self._was_initialized_by_me != True:
-            self._force_init()
-
-    def _force_init(self):
-        if pygame.mixer.get_init() == None:
-            mixer.init()
-            self._was_initialized_by_me = True
-            #print("init")
-        else:
-            self._was_initialized_by_me = False
-
-    @staticmethod
-    def stop_if_initialized():
-        if pygame.mixer.get_init() != None:
-            mixer.quit()
-            #print("deinit")
-
-    def stop(self, end_func):
-        if self._was_initialized_by_me == True:
-            if end_func != None:
-                end_func()
-            MixerManager.stop_if_initialized()
-            self._was_initialized_by_me = False
-
-
 def init_reader(wait_time):
     sys.stdout.write("Waiting for reader ... ")
     sys.stdout.flush()
@@ -262,7 +230,7 @@ def run_player(config_dir):
     mixer.pre_init(44100, -16, 2, 2048)
     pygame.init()
 
-    MixerManager.stop_if_initialized()
+    mixman.MixerManager.stop_if_initialized()
 
     event_insert = pygame.event.custom_type()
     event_remove = pygame.event.custom_type()
