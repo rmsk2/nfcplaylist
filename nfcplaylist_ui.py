@@ -3,8 +3,6 @@ import consts
 import configurator
 
 
-VERSION_STRING = "1.2.0"
-
 # This should be as long as the longest string to be displayed
 EMPTY_STR = '                                  '
 ERR_MSG_LOAD_PLAYLIST = "err_msg_load_playlist"
@@ -152,7 +150,7 @@ class NfcPlaylistUI(configurator.UiBase):
         self._text = msg
 
     def _set_caption_txt(self, txt):
-        pygame.display.set_caption(f"{txt} - Version {VERSION_STRING}")
+        pygame.display.set_caption(f"{txt} - Version {consts.VERSION_STRING}")
 
     def _redraw(self):
         text = self._font.render(self._text, True, self.black, self._background_col)

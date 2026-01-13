@@ -30,6 +30,8 @@ SHUTDOWN_COMMAND = "echo shutdown"
 NO_CARD_ID = -1
 NO_ATR = ""
 
+VERSION_STRING = "1.2.1"
+
 def set_shutdown_command(cmd):
     global SHUTDOWN_COMMAND
     SHUTDOWN_COMMAND = cmd

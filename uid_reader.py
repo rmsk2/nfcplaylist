@@ -1,7 +1,6 @@
 import hashlib
 from typing import Any
 from abc import ABC, abstractmethod
-import consts
 
 # A UiReader knows how to calculate an individual identity for
 # the cards of a specifc type using their serial number

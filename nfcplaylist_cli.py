@@ -15,7 +15,7 @@ class NfcPlaylistUI(configurator.UiBase):
         pass
 
     def start(self):
-        print("Program start")
+        print(f"Program start. Version {consts.VERSION_STRING}")
 
     def handle_error(self, err_type, err_msg):
         self._logger(err_msg)
