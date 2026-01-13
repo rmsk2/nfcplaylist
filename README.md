@@ -107,11 +107,14 @@ problems you could adapt the static method `determine_id()` of class `IUidReader
 
 # Running the software and configuration
 
-You can run this software through the command `python3 nfcplaylist.py <config_dir>`. Maybe you have to replace `python3` by `python`
-depending on your system. The config dir is optional. If it is mssing the current directory is used. When started the program
-reads the file `ui_config` in the config dir and interprets any `.json` file in this directory as a playlist. When an error
-reading a card is encountered the background of the UI flashes red once. An error reading a file is signalled by a single flashing
-of the background in blue.
+You can run this software by executing the command `python3 nfcplaylist.py <config_dir>`. Maybe you have to replace `python3` by 
+`python` depending on your system. If the environment variable `NFCPLAY_UI` is set to the value `CLI` upon start of the program a
+text only user interface is used instead of a GUI.
+
+The config dir parameter is optional. If it is mssing the current directory is used. When started the program reads the file `ui_config`
+in the config dir and interprets any `.json` file in this directory as a playlist. When an error reading a card is encountered the
+background of the UI flashes red once. An error reading a file is signalled by a single flashing of the background in blue. When using
+the text UI corresponding error messages a printed to the console.
 
 ## Config of program
 

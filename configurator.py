@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 import os
 import json
 import sys
@@ -5,7 +6,8 @@ import mixman
 import pygame
 import consts
 
-class UiBase:
+
+class UiBase(ABC):
     def __init__(self, event_ui_stopped):
         self.stopped_event = event_ui_stopped
         self._activate_close_button = False
@@ -34,10 +36,40 @@ class UiBase:
         if (event.kind == consts.FUNC_END) and do_stop:
             self._signal_ui_stopped()
     
-    # Override this method. Return a bool. If consts.FUNC_END is handled this bool
+    # Return a bool. If consts.FUNC_END is handled this bool
     # determines if the program stops (True) or not (False)
-    def handle_all_func_events(event):
-        return True
+    @abstractmethod
+    def handle_all_func_events(self, event) -> bool:
+        ...
+
+    # returns ui_config["wait_reader_sec"]
+    @abstractmethod
+    def init(self, config_dir) -> int:
+        ...
+
+    @abstractmethod
+    def force_redraw(self):
+        ...
+
+    @abstractmethod
+    def start(self):
+        ...
+
+    @abstractmethod
+    def handle_error(self, err_type, err_msg):
+        ...
+
+    @abstractmethod
+    def handle_play_start(self, event):
+        ...
+
+    @abstractmethod
+    def handle_pause(self):
+        ...
+
+    @abstractmethod
+    def handle_list_end(self):
+        ...
 
     def _signal_ui_stopped(self):
         pygame.event.post(pygame.event.Event(self.stopped_event))
