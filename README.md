@@ -179,9 +179,9 @@ The "key" `play_list` can be used to set the name of the playlist. This will als
 be displayed. `file_name` is set to the file name under which the playlist was read upon program start. It can be set to the empty string if 
 you create a new playlist by hand. This information is used when a playlist needs to be updated on disk by the program. `current_title` holds the 
 zero based index of the track which would be played and `play_time` is used to determine the offset in seconds into this file. This is used to restart 
-playback on the same spot where it was stopped. For this to work 100% reliably, MP3 and OGG files should not be encoded with a variable bit rate. This is 
+playback on the same spot where it was stopped. For this to work 100% reliably, MP3 files should not be encoded with a variable bit rate. This is 
 [a limitation](https://www.pygame.org/docs/ref/music.html#pygame.mixer.music.play) of `pygame`. If you are able or forced to encode the audio files
-yourself, you can use `oggenc -m 160 -M 160 ...` to create 160 kBit non VBR OGG-Files. The value `card_id` determines the id of the
+yourself, you can use `oggenc -m 160 -M 160 ...` to create 160 kBit OGG-Files. The value `card_id` determines the id of the
 card which is used as the `playlist card` for this playlist. As described above these ids can be determined by `id_gen.py` for DESFire and
 ISO 14443 Type A cards and by the position of the ATR in `ALL_ATRS` for all other cards. `data_dir` specifies the directory in which the actual sound
 files are stored. The list `titles` specifies the names and positions of the individual tracks on this playlist, i.e. the sequence in this list
