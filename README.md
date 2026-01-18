@@ -76,8 +76,8 @@ totally overblown and you are right. But that is what seemed to work with my rea
 ## Using simpler NFC tags
 
 In a second step and after purchasing an additional reader (an ACS ACR122U) I also implemented reading serial numbers from ISO 14443 Type A
-NFC tags like for instance various types of Mifare cards. Take a look at `uidfactory.py`, `uid_reader.IUidReader`, `DESFireUidReader`
-and `Ntag215UidReader` in order to get an idea of how to add more card types. I then discovered that the DESFire cards can also be 
+NFC tags like for instance various types of Mifare cards. Take a look at `uidfactory.py`, `uid_reader.IUidReader`, `desfire.UidReader`
+and `iso14443.UidReader` in order to get an idea of how to add more card types. I then discovered that the DESFire cards can also be 
 treated as simple ISO 14443 Type A tags, but I left the DESFire specific code in place.
 
 ## Speaking of the ACS ACR122U
@@ -99,11 +99,11 @@ after the first card has been successfully read if an ACR122U is detected to be 
 ## A note about card ids
 
 As `id_gen.py` simply calculates a hash over the serial number read from the card and uses the first two bytes of this
-hash as an id (see method `uid_to_card_id()` of class `DESFireUidReader` in `desfire.py` or `Ntag215UidReader` in `ntag21x.py`) 
+hash as an id (see method `uid_to_card_id()` of class `desfire.UidReader` in `desfire.py` or `iso14443.UidReader` in `iso14443.py`) 
 it is not that unlikely that two of your cards are assigned the same id. In that case you could use some other bytes from the hash, 
 hash some additional data or use more hash bytes to make sure all of your cards end up having a different id. If you run into such
-problems you could adapt the static method `determine_id()` of class `IUidReader` (defined in `nfcplaylistsconsts.py`) accorddingly.
-`determine_id()` is called by `uid_to_card_id()` as implemented by `DESFireUidReader` and `Ntag215UidReader`.
+problems you could adapt the static method `determine_id()` of class `IUidReader` (defined in `uid_reader.py`) accorddingly.
+`determine_id()` is called by `uid_to_card_id()` as implemented by `desfire.UidReader` and `iso14443.UidReader`.
 
 # Running the software and configuration
 
