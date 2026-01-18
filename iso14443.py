@@ -3,7 +3,7 @@ import consts
 import uid_reader
 
 
-class Ntag215UidReader(uid_reader.IUidReader):
+class UidReader(uid_reader.IUidReader):
     def __init__(self, watched_atr, card_name = "Ntag215"):
         self._atr = watched_atr
         self._name = card_name

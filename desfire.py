@@ -2,7 +2,7 @@ import consts
 import uid_reader
 
 
-class DESFireUidReader(uid_reader.IUidReader):
+class UidReader(uid_reader.IUidReader):
     def __init__(self, watched_atr):
         self._atr = watched_atr
         # Taken and corrected from https://ridrix.wordpress.com/2009/09/19/mifare-desfire-communication-example/

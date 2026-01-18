@@ -3,9 +3,9 @@ from typing import Any
 import consts
 import uid_reader
 import desfire
-import ntag21x
+import iso14443
 
-class DummyReader(uid_reader.IUidReader):
+class AtrReader(uid_reader.IUidReader):
     def __init__(self, name, atr):
         self._id = UidReaderRepo.get_default_id(atr)
         self._name = name
@@ -26,7 +26,7 @@ class UidReaderRepo:
         self._atr_map = {}
         self.add_named_cards()
 
-        # automatically create a dummy uid reader for all cards which are
+        # automatically create an ATR uid reader for all cards which are
         # not explicitly named
         all = set(consts.ALL_ATRS)
         named = set(self._atr_map.keys())
@@ -34,16 +34,16 @@ class UidReaderRepo:
 
         for i in not_named:
             card_type = UidReaderRepo.get_default_id(i)
-            self._atr_map[i] = DummyReader(f"Type {card_type}", i)
+            self._atr_map[i] = AtrReader(f"Type {card_type}", i)
 
     def add_named_cards(self):
-        self._atr_map[consts.ATR_DES_FIRE] = desfire.DESFireUidReader(consts.ATR_DES_FIRE)
-        self._atr_map[consts.ATR_NTAG] = ntag21x.Ntag215UidReader(consts.ATR_NTAG)
-        self._atr_map[consts.ATR_MIFARE_CLASSIC] = ntag21x.Ntag215UidReader(consts.ATR_MIFARE_CLASSIC, "Mifare Classic")
-        self._atr_map[consts.ATR_MIFARE_ULTRALIGHT] = ntag21x.Ntag215UidReader(consts.ATR_MIFARE_ULTRALIGHT, "Mifare Ultralight")
-        self._atr_map[consts.ATR_E_PERSO] = DummyReader("German national ID", consts.ATR_E_PERSO)
-        self._atr_map[consts.ATR_GIRO] = DummyReader("German Giro", consts.ATR_GIRO)
-        self._atr_map[consts.ATR_EGK] = DummyReader("German electronic health", consts.ATR_EGK)
+        self._atr_map[consts.ATR_DES_FIRE] = desfire.UidReader(consts.ATR_DES_FIRE)
+        self._atr_map[consts.ATR_NTAG] = iso14443.UidReader(consts.ATR_NTAG)
+        self._atr_map[consts.ATR_MIFARE_CLASSIC] = iso14443.UidReader(consts.ATR_MIFARE_CLASSIC, "Mifare Classic")
+        self._atr_map[consts.ATR_MIFARE_ULTRALIGHT] = iso14443.UidReader(consts.ATR_MIFARE_ULTRALIGHT, "Mifare Ultralight")
+        self._atr_map[consts.ATR_E_PERSO] = AtrReader("German national ID", consts.ATR_E_PERSO)
+        self._atr_map[consts.ATR_GIRO] = AtrReader("German Giro", consts.ATR_GIRO)
+        self._atr_map[consts.ATR_EGK] = AtrReader("German electronic health", consts.ATR_EGK)
 
     @staticmethod
     def get_default_id(atr):
